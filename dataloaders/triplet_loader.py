@@ -15,14 +15,14 @@ class TripletLoader(Loader):
     
     index = 0
     while index < len(data_table):
-      system('clear')
-      print("Loading data...")
-      print("{}/{}".format(index, len(data_table)))
-
       batch = []
 
       # batch size is lesser between preset batch size and images remaining in dataset
       for i in range(min(batch_size, len(data_table)-index)):
+        system('clear')
+        print("Loading data...")
+        print("{}/{}".format(index, len(data_table)))
+
         # set anchor to next image in data table
         anchor_class_id = data_table.loc[index, 'category_id']
         neg_class_id = anchor_class_id

@@ -3,7 +3,7 @@ import torch
 from os import system
 import pandas as pd
 
-def train_model(dataloaders, model, loss_fn, optimizer, scheduler, num_epochs=10):
+def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_epochs=10):
     since = time.time()
 
     # send to the gpu if available
@@ -17,6 +17,7 @@ def train_model(dataloaders, model, loss_fn, optimizer, scheduler, num_epochs=10
     results = []
 
     for epoch in range(num_epochs):
+        print('-' * 11)
         print('Epoch {}/{}'.format(epoch+1, num_epochs))
         print('-' * 11)
 
@@ -32,6 +33,7 @@ def train_model(dataloaders, model, loss_fn, optimizer, scheduler, num_epochs=10
             running_loss = 0.0
             running_batch = 0
             running_images = 0
+            running_corrects = 0
 
             i = 1
             for data in dataloaders[phase].batched_data:
@@ -41,17 +43,26 @@ def train_model(dataloaders, model, loss_fn, optimizer, scheduler, num_epochs=10
                 # zero the parameter gradients
                 optimizer.zero_grad()
                 
-                loss = loss_fn.getLoss(data, model, device)
-
-                print("Loss {}".format(loss))
                 # backward + optimize only if in training phase
                 if phase == 'train':
-                    loss.backward()
-                    optimizer.step()
+                    loss = loss_fn.getLoss(data, model, device)
+                    print("Loss {}".format(loss))
 
-                # statistics
-                running_loss += loss.data.item()
-                running_batch += 1
+                    loss.backward()
+
+                    # statistics
+                    running_loss += loss.data.item()
+                elif phase == 'valid':
+                    j = 0
+                    corrects = 0
+                    for test in data:
+                        test_data = data[:j] + data[i+j:]
+                        corrects += acc_fn.correct(test, test_data, model, device)
+                        j += 1
+                    print("Batch accuracy: {}".format(corrects / j))
+
+            optimizer.step()
+            running_batch += 1
 
             scheduler.step()
 

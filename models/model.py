@@ -4,10 +4,11 @@ import time
 from models.train import train_model
 
 class Model():
-  def __init__(self, dataloaders, model, loss_fn, epochs=20, step_size=7, pretraining=True, feature_extracting=False, lr=0.01):
+  def __init__(self, dataloaders, model, loss_fn, acc_fn, epochs=20, pretraining=True, step_size=7, feature_extracting=False, lr=0.01):
     self.epochs = epochs
 
     self.loss_fn = loss_fn
+    self.acc_fn = acc_fn
     self.loaders = dataloaders
     self.model = model
 
@@ -22,7 +23,7 @@ class Model():
 
   def train(self):
     start_time = time.time()
-    train_model(self.loaders, self.model, self.loss_fn, self.optimizer, self.scheduler, self.epochs)
+    train_model(self.loaders, self.model, self.loss_fn, self.acc_fn, self.optimizer, self.scheduler, self.epochs)
     print('Training time: {:10f} minutes'.format((time.time()-start_time)/60))
 
   def get_optimizer(self, lr):

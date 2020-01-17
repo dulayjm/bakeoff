@@ -1,5 +1,6 @@
 from models.resnet import Resnet
 from models.alexnet import Alexnet
+from models.googlenet import Googlenet
 from datasets.CUB import CUB
 from datasets.CARS import CARS
 from datasets.TEST import TEST

@@ -10,7 +10,7 @@ from dataloaders.loader import Loader
 from accuracy.knearest import KNN
 import numpy as np
 
-data = TEST()
+data = CUB()
 
 train_loader = TripletLoader(data.train_data, data.train_set, batch_size=25)
 valid_loader = Loader(data.valid_data, data.valid_set, batch_size=25)
@@ -21,7 +21,7 @@ param = {
   "loss_fn": TripletLoss(margin=0.3),
   "acc_fn": KNN(),
   "epochs": 50,
-  "pretraining": False,
+  "pretraining": True,
   "step_size": 7,
   "feature_extracting": False,
   "learning_rate": 0.001,

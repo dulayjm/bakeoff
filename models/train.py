@@ -46,7 +46,6 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                 # backward + optimize only if in training phase
                 if phase == 'train':
                     loss = loss_fn.getLoss(data, model, device)
-                    print("Loss {}".format(loss))
 
                     loss.backward()
 
@@ -59,19 +58,24 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                         test_data = data[:j] + data[i+j:]
                         corrects += acc_fn.correct(test, test_data, model, device)
                         j += 1
-                    print("Batch accuracy: {}".format(corrects / j))
+
+                    running_corrects += corrects
 
             optimizer.step()
             running_batch += 1
 
             scheduler.step()
 
-            epoch_loss = running_loss / running_batch
+        epoch_loss = running_loss / running_batch
+        epoch_acc = running_corrects / dataset_size
 
-            results.append(['{}/{}'.format(epoch+1, num_epochs), phase, epoch_loss, 0])
+        print("Train loss: {}".format(epoch_loss))
+        print("Valid acc: {}".format(epoch_acc))
+
+        results.append(['{}/{}'.format(epoch+1, num_epochs), epoch_loss, epoch_acc])
 
     # output metrics to CSV
-    df = pd.DataFrame(results, columns=['epoch', 'phase', 'loss', 'accuracy'])
+    df = pd.DataFrame(results, columns=['epoch', 'train loss', 'valid accuracy'])
     df.to_csv('results.csv')
 
     time_elapsed = time.time() - since

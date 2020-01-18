@@ -21,7 +21,7 @@ class Loader():
 
         # log progress
         system('clear')
-        logging.info("Loading data...")
+        print("Loading dataloader...")
         perc = index*50//len(data_table)
         print(">"*perc + "-"*(50-perc))
 

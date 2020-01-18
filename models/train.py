@@ -19,6 +19,7 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
 
     for epoch in range(num_epochs):
         logging.info('Beginning Epoch {}/{}'.format(epoch+1, num_epochs))
+        print('Epoch {}/{}'.format(epoch+1, num_epochs))
 
         for phase in dataloaders:
             logging.info("Entering {} phase...".format(phase))
@@ -36,8 +37,7 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
 
             i = 1
             for data in dataloaders[phase].batched_data:
-                logging.info("Batch {} of {}".format(i, len(dataloaders[phase].batched_data)))
-                i += 1
+                print("{} batch {} of {}".format(phase, i, len(dataloaders[phase].batched_data)))
 
                 # zero the parameter gradients
                 optimizer.zero_grad()
@@ -45,7 +45,8 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                 # backward + optimize only if in training phase
                 if phase == 'train':
                     loss = loss_fn.getLoss(data, model, device)
-                    logging.debug("Batch loss: {}".format(loss))
+                    logging.debug("{} batch {} loss: {}".format(phase, i, loss))
+                    
                     loss.backward()
 
                     # statistics
@@ -59,6 +60,7 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                         j += 1
 
                     running_corrects += corrects
+                i += 1
 
             optimizer.step()
             running_batch += 1

@@ -1,3 +1,5 @@
+import logging
+
 from models.resnet import Resnet
 from models.alexnet import Alexnet
 from models.googlenet import Googlenet
@@ -10,7 +12,9 @@ from dataloaders.loader import Loader
 from accuracy.knearest import KNN
 import numpy as np
 
-data = CUB()
+logging.basicConfig(level=logging.DEBUG)
+
+data = TEST()
 
 train_loader = TripletLoader(data.train_data, data.train_set, batch_size=25)
 valid_loader = Loader(data.valid_data, data.valid_set, batch_size=25)

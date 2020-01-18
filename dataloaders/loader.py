@@ -1,3 +1,4 @@
+import logging
 from os import system
 
 class Loader():
@@ -10,16 +11,22 @@ class Loader():
     batches = []
     
     index = 0
+
     while index < len(data_table):
       batch = []
       # batch size is lesser between preset batch size and images remaining in dataset
       for i in range(min(batch_size, len(data_table)-index)):
-        system('clear')
-        print("Loading data...")
-        print("{}/{}".format(index, len(data_table)))
-        
-        batch.append(dataset[index])
+        batch.append(self.getBatch(index, data_table, dataset))
         index += 1
+
+        # log progress
+        system('clear')
+        logging.info("Loading data...")
+        perc = index*50//len(data_table)
+        print(">"*perc + "-"*(50-perc))
 
       batches.append(batch)
     return batches
+
+  def getBatch(self, index, data_table, dataset):
+    return dataset[index]

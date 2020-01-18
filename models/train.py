@@ -1,4 +1,5 @@
 import time
+import logging
 import torch
 from os import system
 import pandas as pd
@@ -17,12 +18,10 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
     results = []
 
     for epoch in range(num_epochs):
-        print('-' * 11)
-        print('Epoch {}/{}'.format(epoch+1, num_epochs))
-        print('-' * 11)
+        logging.info('Beginning Epoch {}/{}'.format(epoch+1, num_epochs))
 
         for phase in dataloaders:
-            print("---{}---".format(phase))
+            logging.info("Entering {} phase...".format(phase))
             dataset_size = len(dataloaders[phase].dataset)
 
             if phase == 'train':
@@ -37,7 +36,7 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
 
             i = 1
             for data in dataloaders[phase].batched_data:
-                print("Batch {} of {}".format(i, len(dataloaders[phase].batched_data)))
+                logging.info("Batch {} of {}".format(i, len(dataloaders[phase].batched_data)))
                 i += 1
 
                 # zero the parameter gradients
@@ -46,7 +45,7 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                 # backward + optimize only if in training phase
                 if phase == 'train':
                     loss = loss_fn.getLoss(data, model, device)
-
+                    logging.debug("Batch loss: {}".format(loss))
                     loss.backward()
 
                     # statistics
@@ -69,8 +68,8 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
         epoch_loss = running_loss / running_batch
         epoch_acc = running_corrects / dataset_size
 
-        print("Train loss: {}".format(epoch_loss))
-        print("Valid acc: {}".format(epoch_acc))
+        logging.info("Train loss: {}".format(epoch_loss))
+        logging.info("Valid acc: {}".format(epoch_acc))
 
         results.append(['{}/{}'.format(epoch+1, num_epochs), epoch_loss, epoch_acc])
 

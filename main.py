@@ -12,8 +12,6 @@ from dataloaders.loader import Loader
 from accuracy.knearest import KNN
 import numpy as np
 
-logging.basicConfig(filename='main.log', level=logging.DEBUG, format='%(asctime)s:%(levelname)s::  %(message)s')
-
 data = TEST()
 
 train_loader = TripletLoader(data.train_data, data.train_set, batch_size=25)
@@ -29,10 +27,13 @@ model_param = {
   "step_size": 7,
   "feature_extracting": False,
   "learning_rate": 0.001,
+  "name": "resnet"
 }
 
-logging.info("New model: " + model_param)
+logging.basicConfig(filename="{}.log".format(model_param["name"]), level=logging.DEBUG, format='%(asctime)s:%(levelname)s::  %(message)s')
+
+logging.info("New model: {}".format(model_param))
 
 resnet = Resnet(model_param["loaders"], model_param["loss_fn"], model_param["acc_fn"], model_param["epochs"], model_param["pretraining"], 
-                model_param["step_size"], model_param["feature_extracting"], model_param["learning_rate"])
+                model_param["step_size"], model_param["feature_extracting"], model_param["learning_rate"], model_param["name"])
 resnet.train()

@@ -33,7 +33,8 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
             running_loss = 0.0
             running_batch = 0
             running_images = 0
-            running_corrects = 0
+            running_corrects1 = 0
+            running_corrects5 = 0
 
             batch_num = 1
             for data in dataloaders[phase].batched_data:
@@ -63,8 +64,8 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                             corrects1 += cor1
                             corrects5 += cor5
                             j += 1
-                        logging.debug("{} batch {} acc: {}".format(phase, batch_num, corrects1/j))
-                        logging.debug("{} batch {} acc: {}".format(phase, batch_num, corrects5/j))
+                        logging.debug("{} batch {} top 1 acc: {}".format(phase, batch_num, corrects1/j))
+                        logging.debug("{} batch {} top 5 acc: {}".format(phase, batch_num, corrects5/j))
                         running_corrects1 += corrects1
                         running_corrects5 += corrects5
                 batch_num += 1

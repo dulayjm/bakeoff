@@ -36,4 +36,6 @@ class Data():
         df = pd.DataFrame(train, columns=['file', 'category', 'category_id',])
         train_data = df.sample(frac=0.7).reset_index().drop(columns=['index'])
         valid_data = df[~df['file'].isin(train_data['file'])].reset_index().drop(columns=['index'])
+        # shuffle valid_data
+        valid_data = valid_data.sample(frac=1)
         return train_data, valid_data

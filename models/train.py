@@ -46,24 +46,28 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                 if phase == 'train':
                     loss = loss_fn.getLoss(data, model, device)
                     logging.debug("{} batch {} loss: {}".format(phase, i, loss))
-                    
+
                     loss.backward()
 
                     # statistics
                     running_loss += loss.data.item()
+                    print("running loss: {}".format(running_loss))
                 elif phase == 'valid':
                     j = 0
                     corrects = 0
                     for test in data:
-                        test_data = data[:j] + data[i+j:]
-                        corrects += acc_fn.correct(test, test_data, model, device)
+                        test_data = data[:j] + data[j+1:]
+                        cor = acc_fn.correct(test, test_data, model, device)
+                        corrects += cor
                         j += 1
-
+                    
+                    logging.debug("{} batch {} acc: {}".format(phase, i, corrects/j))
                     running_corrects += corrects
                 i += 1
 
             optimizer.step()
             running_batch += 1
+            print("running batch: {}".format(running_batch))
 
             scheduler.step()
 

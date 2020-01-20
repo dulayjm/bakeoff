@@ -16,7 +16,7 @@ class Loader():
       batch = []
       # batch size is lesser between preset batch size and images remaining in dataset
       for i in range(min(batch_size, len(data_table)-index)):
-        batch.append(self.getBatch(index, data_table, dataset))
+        batch.append(self.getSet(index, data_table, dataset))
         index += 1
 
         # log progress
@@ -28,5 +28,5 @@ class Loader():
       batches.append(batch)
     return batches
 
-  def getBatch(self, index, data_table, dataset):
+  def getSet(self, index, data_table, dataset):
     return dataset[index]

@@ -11,11 +11,11 @@ class TripletLoader(Loader):
     
     super().__init__(data_table, dataset, batch_size)
 
-  def getBatch(self, index, data_table, dataset):
+  def getSet(self, index, data_table, dataset):
     # set anchor to next image in data table
     anchor_class_id = data_table.loc[index, 'category_id']
     neg_class_id = anchor_class_id
-    #select different class for negative example
+    # select different class for negative example
     while (anchor_class_id == neg_class_id):
       neg_class_id = np.random.choice(data_table['category_id'], 1, replace=False)[0]
     assert anchor_class_id != neg_class_id, "Negative example must be of a different class than anchor."

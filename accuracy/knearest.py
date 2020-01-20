@@ -17,6 +17,8 @@ class KNN():
 
     # return if actual test image label is contained in the top X closest image labels
     knn_labels = [labels[index] for index in knn.indices.tolist()]
+    print(test)
+    print("KNN: {}".format(knn_labels))
     if (test[1] in knn_labels):
       return 1
     else:

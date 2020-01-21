@@ -27,7 +27,7 @@ model_param = {
   "step_size": 7,
   "feature_extracting": False,
   "learning_rate": 0.001,
-  "name": "new_loader_debug2"
+  "name": "new_loader_debug2-delete"
 }
 
 logging.basicConfig(filename="{}.log".format(model_param["name"]), level=logging.DEBUG, format='%(asctime)s:%(levelname)s::  %(message)s')

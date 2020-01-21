@@ -16,7 +16,7 @@ data = TEST()
 
 train_loader = TripletLoader(data.train_data, data.train_set, batch_size=25)
 valid_loader = Loader(data.valid_data, data.valid_set, batch_size=len(data.valid_set))
-loaders = {'train':train_loader, 'valid':valid_loader}
+loaders = {'valid':valid_loader, 'train':train_loader}
 
 model_param = {
   "loaders": loaders,
@@ -27,7 +27,7 @@ model_param = {
   "step_size": 7,
   "feature_extracting": False,
   "learning_rate": 0.001,
-  "name": "CUB_test2"
+  "name": "new_loader_debug2"
 }
 
 logging.basicConfig(filename="{}.log".format(model_param["name"]), level=logging.DEBUG, format='%(asctime)s:%(levelname)s::  %(message)s')

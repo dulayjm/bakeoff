@@ -14,9 +14,13 @@ class Loader():
 
     while index < len(self.data_table):
       batch = []
+      batch_labels = []
       # batch size is lesser between preset batch size and images remaining in dataset
       for i in range(min(batch_size, len(self.data_table)-index)):
-        batch.append(self.getSet(index, self.data_table, self.dataset))
+        images, labels = self.getSet(index, self.data_table, self.dataset)
+        batch.extend(images)
+        batch_labels.extend(labels)
+
         index += 1
 
         # log progress
@@ -25,8 +29,8 @@ class Loader():
         perc = index*50//len(self.data_table)
         print(">"*perc + "-"*(50-perc))
 
-      batches.append(batch)
+      batches.append([batch, batch_labels])
     return batches
 
   def getSet(self, index, data_table, dataset):
-    return dataset[index]
+    return [dataset[index][0]], [dataset[index][1]]

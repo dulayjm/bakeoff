@@ -1,7 +1,7 @@
 import torch
 
 class KNN():
-  def correct(self, test, data, model, device, top=1):
+  def correct(self, test, data, top=5):
     # separate weights from labels
     weights = [item[0] for item in data]
     for w in weights:
@@ -12,18 +12,17 @@ class KNN():
     # get X closest outputs to test image
     dist = torch.norm(weights - test[0], dim=1, p=None)
     dist = torch.norm(dist, dim=1, p=None)
-    dist = torch.norm(dist, dim=1, p=None)
-    knn1 = dist.topk(top, largest=False)
-    knn5 = dist.topk(5, largest=False)
+    knn = dist.topk(top, largest=False)
 
     # return if actual test image label is contained in the top X closest image labels
-    knn_labels1 = [labels[index] for index in knn1.indices.tolist()]
-    knn_labels5 = [labels[index] for index in knn5.indices.tolist()]
-    print(test)
-    print("KNN Top 5: {}".format(knn_labels5))
-    if (test[1] in knn_labels1 and test[1] in knn_labels5):
+    knn_labels = [labels[index] for index in knn.indices.tolist()]
+
+    # top match is the correct label
+    if (test[1] == knn_labels[0]):
       return [1, 1]
-    elif (test[1] in knn_labels5):
+    # correct label is in top 5
+    elif (test[1] in knn_labels):
       return [0, 1]
+    # no match
     else:
       return [0, 0]

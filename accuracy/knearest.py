@@ -13,13 +13,17 @@ class KNN():
     dist = torch.norm(weights - test[0], dim=1, p=None)
     dist = torch.norm(dist, dim=1, p=None)
     dist = torch.norm(dist, dim=1, p=None)
-    knn = dist.topk(top, largest=False)
+    knn1 = dist.topk(top, largest=False)
+    knn5 = dist.topk(5, largest=False)
 
     # return if actual test image label is contained in the top X closest image labels
-    knn_labels = [labels[index] for index in knn.indices.tolist()]
+    knn_labels1 = [labels[index] for index in knn1.indices.tolist()]
+    knn_labels5 = [labels[index] for index in knn5.indices.tolist()]
     print(test)
-    print("KNN: {}".format(knn_labels))
-    if (test[1] in knn_labels):
-      return 1
+    print("KNN Top 5: {}".format(knn_labels5))
+    if (test[1] in knn_labels1 and test[1] in knn_labels5):
+      return [1, 1]
+    elif (test[1] in knn_labels5):
+      return [0, 1]
     else:
-      return 0
+      return [0, 0]

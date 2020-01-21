@@ -15,18 +15,18 @@ import numpy as np
 data = TEST()
 
 train_loader = TripletLoader(data.train_data, data.train_set, batch_size=25)
-valid_loader = Loader(data.valid_data, data.valid_set, batch_size=100)
+valid_loader = Loader(data.valid_data, data.valid_set, batch_size=len(data.valid_set))
 loaders = {'train':train_loader, 'valid':valid_loader}
 
 model_param = {
   "loaders": loaders,
-  "loss_fn": TripletLoss(margin=0.3),
+  "loss_fn": TripletLoss(margin=0.5),
   "acc_fn": KNN(),
   "epochs": 50,
   "pretraining": True,
   "step_size": 7,
   "feature_extracting": False,
-  "learning_rate": 0.01,
+  "learning_rate": 0.001,
   "name": "resnet"
 }
 

@@ -21,24 +21,26 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
         logging.info('Beginning Epoch {}/{}'.format(epoch+1, num_epochs))
         print('Epoch {}/{}'.format(epoch+1, num_epochs))
 
+        running_loss = 0.0
+        running_corrects1 = 0
+        running_corrects5 = 0
+
+        train_set_size = len(dataloaders["train"].dataset)
+        valid_set_size = len(dataloaders["valid"].dataset)
         for phase in dataloaders:
             logging.info("Entering {} phase...".format(phase))
-            dataset_size = len(dataloaders[phase].dataset)
 
             if phase == 'train':
                 model.train(True)  # Set model to training mode
             else:
                 model.train(False)  # Set model to evaluate mode
-
-            running_loss = 0.0
+ 
             running_batch = 0
-            running_images = 0
-            running_corrects1 = 0
-            running_corrects5 = 0
-
+            
             batch_num = 1
-            for data in dataloaders[phase].batched_data:
-                print("{} batch {} of {}".format(phase, batch_num, len(dataloaders[phase].batched_data)))
+            batched_data = dataloaders[phase].makeBatches(dataloaders[phase].batch_size)
+            for data in batched_data:
+                print("{} batch {} of {}".format(phase, batch_num, len(batched_data)))
 
                 # zero the parameter gradients
                 optimizer.zero_grad()
@@ -52,7 +54,7 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                         loss.backward()
                         optimizer.step()
 
-                        # statistics
+                        # track epoch total loss
                         running_loss += loss.data.item() * len(data)
                     elif phase == 'valid':
                         j = 0
@@ -60,7 +62,7 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                         corrects5 = 0
                         for test in data:
                             test_data = data[:j] + data[j+1:]
-                            cor1, cor5 = acc_fn.correct(test, test_data, model, device)
+                            cor1, cor5 = acc_fn.correct(test, test_data, model, device, top=5)
                             corrects1 += cor1
                             corrects5 += cor5
                             j += 1
@@ -72,9 +74,9 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
 
             scheduler.step()
 
-        epoch_loss = running_loss / dataset_size
-        epoch_acc = running_corrects1 / dataset_size
-        epoch_acc5 = running_corrects5 / dataset_size
+        epoch_loss = running_loss / train_set_size
+        epoch_acc = running_corrects1 / valid_set_size
+        epoch_acc5 = running_corrects5 / valid_set_size
 
         logging.info("Train loss: {}".format(epoch_loss))
         logging.info("Valid acc: {}".format(epoch_acc))

@@ -20,14 +20,14 @@ loaders = {'train':train_loader, 'valid':valid_loader}
 
 model_param = {
   "loaders": loaders,
-  "loss_fn": TripletLoss(margin=0.5),
+  "loss_fn": TripletLoss(margin=0.3),
   "acc_fn": KNN(),
   "epochs": 50,
   "pretraining": True,
   "step_size": 7,
   "feature_extracting": False,
   "learning_rate": 0.001,
-  "name": "resnet"
+  "name": "tests"
 }
 
 logging.basicConfig(filename="{}.log".format(model_param["name"]), level=logging.DEBUG, format='%(asctime)s:%(levelname)s::  %(message)s')

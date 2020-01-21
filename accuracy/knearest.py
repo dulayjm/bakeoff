@@ -1,7 +1,7 @@
 import torch
 
 class KNN():
-  def correct(self, test, data, model, device, top=5):
+  def correct(self, test, data, top=5):
     # separate weights from labels
     weights = [item[0] for item in data]
     for w in weights:
@@ -11,7 +11,6 @@ class KNN():
 
     # get X closest outputs to test image
     dist = torch.norm(weights - test[0], dim=1, p=None)
-    dist = torch.norm(dist, dim=1, p=None)
     dist = torch.norm(dist, dim=1, p=None)
     knn = dist.topk(top, largest=False)
 

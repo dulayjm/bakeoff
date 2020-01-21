@@ -20,19 +20,20 @@ loaders = {'train':train_loader, 'valid':valid_loader}
 
 model_param = {
   "loaders": loaders,
-  "loss_fn": TripletLoss(margin=0.3),
+  "loss_fn": TripletLoss(margin=0.6),
   "acc_fn": KNN(),
   "epochs": 50,
   "pretraining": True,
   "step_size": 7,
   "feature_extracting": False,
   "learning_rate": 0.001,
-  "name": "tests"
+  "name": "CUB_test2"
 }
 
 logging.basicConfig(filename="{}.log".format(model_param["name"]), level=logging.DEBUG, format='%(asctime)s:%(levelname)s::  %(message)s')
 
 logging.info("New model: {}".format(model_param))
+logging.info("Train Batch Size: {}".format(loaders['train'].batch_size))
 
 resnet = Resnet(model_param["loaders"], model_param["loss_fn"], model_param["acc_fn"], model_param["epochs"], model_param["pretraining"], 
                 model_param["step_size"], model_param["feature_extracting"], model_param["learning_rate"], model_param["name"])

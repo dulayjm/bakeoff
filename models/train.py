@@ -4,16 +4,14 @@ import torch
 from os import system
 import pandas as pd
 
-def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_epochs=10):
+def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_epochs=10, acc_top=5):
     since = time.time()
 
     # send to the gpu if available
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.to(device)
-    
 
     best_model_wts = model.state_dict()
-    best_acc = 0.0
 
     results = []
 
@@ -60,14 +58,20 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                         j = 0
                         corrects1 = 0
                         corrects5 = 0
-                        for test in data:
-                            test_data = data[:j] + data[j+1:]
-                            cor1, cor5 = acc_fn.correct(test, test_data, model, device, top=5)
+                        outputs = []
+                        for inp in data:
+                            # increase dimension by one and get model output
+                            inp[0].unsqueeze_(0)
+                            output = model(inp[0].to(device))
+                            outputs.append([output, inp[1]])
+                        for test in outputs:
+                            test_data = outputs[:j] + outputs[j+1:]
+                            cor1, cor5 = acc_fn.correct(test, test_data, top=acc_top)
                             corrects1 += cor1
                             corrects5 += cor5
                             j += 1
                         logging.debug("{} batch {} top 1 acc: {}".format(phase, batch_num, corrects1/j))
-                        logging.debug("{} batch {} top 5 acc: {}".format(phase, batch_num, corrects5/j))
+                        logging.debug("{} batch {} top {} acc: {}".format(phase, batch_num, acc_top, corrects5/j))
                         running_corrects1 += corrects1
                         running_corrects5 += corrects5
                 batch_num += 1

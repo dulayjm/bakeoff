@@ -20,14 +20,14 @@ loaders = {'valid':valid_loader, 'train':train_loader}
 
 model_param = {
   "loaders": loaders,
-  "loss_fn": TripletLoss(margin=0.6),
+  "loss_fn": TripletLoss(margin=1.0),
   "acc_fn": KNN(),
   "epochs": 50,
   "pretraining": True,
   "step_size": 7,
   "feature_extracting": False,
   "learning_rate": 0.001,
-  "name": "new_loader_debug2-delete"
+  "name": "new_loader1-0m"
 }
 
 logging.basicConfig(filename="{}.log".format(model_param["name"]), level=logging.DEBUG, format='%(asctime)s:%(levelname)s::  %(message)s')

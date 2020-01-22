@@ -23,4 +23,6 @@ class TripletLoader(Loader):
     # randomly select a positive and a negative image
     pos_idx = np.random.choice(self.map_label_indices[anchor_class_id], 1, replace=False)[0]
     neg_idx = np.random.choice(self.map_label_indices[neg_class_id], 1, replace=False)[0]
-    return [dataset[index], dataset[pos_idx], dataset[neg_idx]]
+
+    # return [images], [labels]
+    return [dataset[index][0], dataset[pos_idx][0], dataset[neg_idx][0]], [dataset[index][1], dataset[pos_idx][1], dataset[neg_idx][1]]

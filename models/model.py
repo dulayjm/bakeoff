@@ -11,6 +11,7 @@ class Model():
     self.acc_fn = acc_fn
     self.loaders = dataloaders
     self.model = model
+    self.name = name
 
     if feature_extracting:
         for param in model.parameters():

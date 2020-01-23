@@ -10,5 +10,5 @@ class Resnet(Model):
     
     def get_optimizer(self, lr):
         num_ftrs = self.model.fc.in_features
-        self.model.fc = torch.nn.Linear(num_ftrs, output_layers)
+        self.model.fc = torch.nn.Linear(num_ftrs, self.output_layers)
         return torch.optim.SGD(self.model.parameters(), lr=lr, momentum=0.9)

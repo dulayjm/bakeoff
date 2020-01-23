@@ -4,7 +4,7 @@ import time
 from models.train import train_model
 
 class Model():
-  def __init__(self, dataloaders, model, loss_fn, acc_fn, epochs=20, pretraining=True, step_size=7, feature_extracting=False, lr=0.01, name="model"):
+  def __init__(self, dataloaders, model, loss_fn, acc_fn, epochs=20, pretraining=True, step_size=7, feature_extracting=False, lr=0.01, output_layers=256, name="model"):
     self.epochs = epochs
 
     self.loss_fn = loss_fn
@@ -12,6 +12,8 @@ class Model():
     self.loaders = dataloaders
     self.model = model
     self.name = name
+
+    self.output_layers = output_layers
 
     if feature_extracting:
         for param in model.parameters():

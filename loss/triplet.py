@@ -8,7 +8,7 @@ class TripletLoss(Loss):
       super().__init__(torch.nn.TripletMarginLoss(margin=margin, p=2))
       self.name = "Triplet Loss"
 
-   def getLoss(self, batch, model, device="cpu"):
+   def getLoss(self, batch, labels, device="cpu"):
       running_loss = 0
       assert batch.shape[0] % 3 == 0, "Triplet loss requires batches to be composed of triplets"
       assert type(batch) == torch.Tensor, "Outputs must be a tensor"

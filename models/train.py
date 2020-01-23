@@ -47,7 +47,7 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                 # backward + optimize only if in training phase
                 with torch.set_grad_enabled(phase == 'train'):
                     if phase == 'train':
-                        loss = loss_fn.getLoss(outputs, model, device)
+                        loss = loss_fn.getLoss(outputs, labels, device)
                         logging.debug("{} batch {} loss: {}".format(phase, batch_num, loss))
 
                         loss.backward()

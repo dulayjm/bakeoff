@@ -17,13 +17,9 @@ import numpy as np
 
 data = TEST()
 
-train_loader = TripletLoader(data.train_data, data.train_set, 135)
-valid_loader = Loader(data.valid_data, data.valid_set, batch_size=50)
-loaders = {'train':train_loader, 'valid':valid_loader}
-
 model_param = {
-  "loaders": loaders,
-  "loss_fn": TripletLoss(margin=1.0),
+  "loaders": {},
+  "loss_fn": TripletLoss(margin=0.5),
   "acc_fn": KNN(),
   "epochs": 50,
   "pretraining": True,
@@ -31,13 +27,17 @@ model_param = {
   "feature_extracting": False,
   "learning_rate": 0.001,
   "output_layers": 256,
-  "name": "batch_hard_pretrain"
+  "name": "testing_batch_hard_loader_lowmargin"
 }
 
-logging.basicConfig(filename="{}.log".format(model_param["name"]), level=logging.INFO, format='%(asctime)s:%(levelname)s::  %(message)s')
+logging.basicConfig(filename="{}.log".format(model_param["name"]), level=logging.DEBUG, format='%(asctime)s:%(levelname)s::  %(message)s')
+
+train_loader = BatchHardLoader(data.train_data, data.train_set, 45)
+valid_loader = Loader(data.valid_data, data.valid_set, batch_size=50)
+model_param['loaders'] = {'train':train_loader, 'valid':valid_loader}
 
 logging.info("New model: {}".format(model_param))
-logging.info("Train Batch Size: {}".format(loaders['train'].batch_size))
+logging.info("Train Batch Size: {}".format(model_param['loaders']['train'].batch_size))
 
 resnet = Resnet(model_param["loaders"], model_param["loss_fn"], model_param["acc_fn"], model_param["epochs"], model_param["pretraining"], 
                 model_param["step_size"], model_param["feature_extracting"], model_param["learning_rate"], model_param["output_layers"], model_param["name"])

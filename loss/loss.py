@@ -10,4 +10,4 @@ class Loss():
       return self.eval(outputs.to(device), labels.to(device))
 
    def __str__(self):
-      return name
+      return self.name

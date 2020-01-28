@@ -15,7 +15,7 @@ from dataloaders.loader import Loader
 from accuracy.knearest import KNN
 import numpy as np
 
-data = TEST()
+data = MNIST()
 
 model_param = {
   "loaders": {},
@@ -27,15 +27,15 @@ model_param = {
   "feature_extracting": False,
   "learning_rate": 0.001,
   "output_layers": 256,
-  "name": "testing_batch_hard_loader_lowmargin"
+  "name": "testing_batch_hard_loader_MNIST"
 }
 
 logging.basicConfig(filename="{}.log".format(model_param["name"]), level=logging.DEBUG, format='%(asctime)s:%(levelname)s::  %(message)s')
 
-train_loader = BatchHardLoader(data.train_data, data.train_set, 45)
+train_loader = BatchHardLoader(data.train_data, data.train_set, 50)
 valid_loader = Loader(data.valid_data, data.valid_set, batch_size=50)
 model_param['loaders'] = {'train':train_loader, 'valid':valid_loader}
-
+print(str(model_param['loss_fn']))
 logging.info("New model: {}".format(model_param))
 logging.info("Train Batch Size: {}".format(model_param['loaders']['train'].batch_size))
 

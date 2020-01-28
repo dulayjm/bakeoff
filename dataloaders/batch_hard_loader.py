@@ -9,6 +9,7 @@ class BatchHardLoader(Loader):
   def __init__(self, data_table, dataset, batch_size):
     self.num_classes = len(set(data_table['category_id']))
     assert batch_size % self.num_classes == 0, "For batch hard loss, batch size must be a multiple of the number of classes"
+    assert batch_size % self.num_classes == 0, "For batch hard loss, batch size must be a multiple of 3"
 
     super().__init__(data_table, dataset, batch_size, "Batch Hard Loader")
 
@@ -20,6 +21,12 @@ class BatchHardLoader(Loader):
     classes = list(set(self.data_table['category_id']))
 
     for i in range(len(self.data_table) // batch_size):
+      # log progress
+      system('clear')
+      print("Loading dataloader...")
+      perc = i*50//(len(self.data_table) // batch_size)
+      print(">"*perc + "-"*(50-perc))
+      
       batch = [[],[]]
       class_idx = 0
       remaining_labels = self.num_classes

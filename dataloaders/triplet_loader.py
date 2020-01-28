@@ -8,7 +8,8 @@ class TripletLoader(Loader):
   def __init__(self, data_table, dataset, batch_size):
     # map each label to the index of all that label's images
     self.map_label_indices = {label: np.flatnonzero(data_table['category_id'] == label).tolist() for label in data_table['category_id']}
-    
+    assert batch_size % self.num_classes == 0, "For batch hard loss, batch size must be a multiple of 3"
+
     super().__init__(data_table, dataset, batch_size, "Triplet Loader")
 
   def getSet(self, index, data_table, dataset):

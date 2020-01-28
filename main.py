@@ -27,7 +27,7 @@ model_param = {
   "feature_extracting": False,
   "learning_rate": 0.001,
   "output_layers": 256,
-  "name": "debuglog"
+  "name": "batch_hard_MNIST"
 }
 
 # setup logging and turn off PIL plugin logging
@@ -35,12 +35,13 @@ logging.basicConfig(filename="{}.log".format(model_param["name"]), level=logging
 pil_logger = logging.getLogger('PIL')
 pil_logger.setLevel(logging.INFO)
 
-train_loader = BatchHardLoader(data.train_data, data.train_set, 50)
+logging.info("-"*50)
+logging.info("New Model")
+
+train_loader = BatchHardLoader(data.train_data, data.train_set, 60)
 valid_loader = Loader(data.valid_data, data.valid_set, batch_size=50)
 model_param['loaders'] = {'train':train_loader, 'valid':valid_loader}
 
-logging.info("-"*50)
-logging.info("New Model")
 for param in model_param:
   logging.info("{}: {}".format(param, str(model_param[param])))
 

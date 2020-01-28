@@ -48,7 +48,7 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                 with torch.set_grad_enabled(phase == 'train'):
                     if phase == 'train':
                         loss = loss_fn.getLoss(outputs, labels, device)
-                        logging.info("{} batch {} loss: {}".format(phase, batch_num, loss))
+                        logging.debug("{} batch {} loss: {}".format(phase, batch_num, loss))
 
                         loss.backward()
                         optimizer.step()
@@ -57,7 +57,7 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                         running_loss += loss.data.item() * dataloaders[phase].batch_size
                     elif phase == 'valid':
                         acc = acc_fn.get_acc(outputs, labels)
-                        logging.info("{} batch {} top 1 acc: {}".format(phase, batch_num, acc))
+                        logging.debug("{} batch {} top 1 acc: {}".format(phase, batch_num, acc))
                         running_acc += acc * dataloaders[phase].batch_size
                 batch_num += 1
 

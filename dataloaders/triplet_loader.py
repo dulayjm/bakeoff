@@ -9,7 +9,7 @@ class TripletLoader(Loader):
     # map each label to the index of all that label's images
     self.map_label_indices = {label: np.flatnonzero(data_table['category_id'] == label).tolist() for label in data_table['category_id']}
     
-    super().__init__(data_table, dataset, batch_size)
+    super().__init__(data_table, dataset, batch_size, "Triplet Loader")
 
   def getSet(self, index, data_table, dataset):
     # set anchor to next image in data table

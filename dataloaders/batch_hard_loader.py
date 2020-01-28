@@ -10,7 +10,7 @@ class BatchHardLoader(Loader):
     self.num_classes = len(set(data_table['category_id']))
     assert batch_size % self.num_classes == 0, "For batch hard loss, batch size must be a multiple of the number of classes"
 
-    super().__init__(data_table, dataset, batch_size)
+    super().__init__(data_table, dataset, batch_size, "Batch Hard Loader")
 
   def makeBatches(self, batch_size):
     batches = []

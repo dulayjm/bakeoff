@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+import logging
 
 from loss.loss import Loss
 
@@ -39,7 +40,7 @@ class BatchHardLoss(Loss):
       i += 1
     
     # return average loss for batch
-    return running_loss / (batch.shape[0] / 3)
+    return running_loss / batch.shape[0]
     
   def getDistance(self, tensor1, tensor2):
     return torch.norm(tensor1 - tensor2, dim=1, p=None)

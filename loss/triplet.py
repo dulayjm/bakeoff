@@ -5,8 +5,7 @@ from loss.loss import Loss
 
 class TripletLoss(Loss):
    def __init__(self, margin=1.0):
-      super().__init__(torch.nn.TripletMarginLoss(margin=margin, p=2))
-      self.name = "Triplet Loss"
+      super().__init__(torch.nn.TripletMarginLoss(margin=margin, p=2), "Offline Triplet")
 
    def getLoss(self, batch, labels, device="cpu"):
       running_loss = 0

@@ -5,8 +5,7 @@ from loss.loss import Loss
 
 class BatchHardLoss(Loss):
   def __init__(self, margin=1.0):
-    super().__init__(torch.nn.TripletMarginLoss(margin=margin, p=2))
-    self.name = "Batch Hard Triplet Loss"
+    super().__init__(torch.nn.TripletMarginLoss(margin=margin, p=2), "Batch Hard")
 
   def getLoss(self, batch, labels, device="cpu"):
     running_loss = 0

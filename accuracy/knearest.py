@@ -35,3 +35,5 @@ class KNN():
       removed.append(each[:j] + each[j+1:])
     return removed
 
+  def __str__(self):
+    return "K Nearest Neighbor"

@@ -15,10 +15,10 @@ from dataloaders.loader import Loader
 from accuracy.knearest import KNN
 import numpy as np
 
-data = MNIST()
+data = TEST()
 
-train_loader = TripletLoader(data.train_data, data.train_set, 45)
-valid_loader = Loader(data.valid_data, data.valid_set, batch_size=len(data.valid_set))
+train_loader = TripletLoader(data.train_data, data.train_set, 135)
+valid_loader = Loader(data.valid_data, data.valid_set, batch_size=50)
 loaders = {'train':train_loader, 'valid':valid_loader}
 
 model_param = {
@@ -26,15 +26,15 @@ model_param = {
   "loss_fn": TripletLoss(margin=1.0),
   "acc_fn": KNN(),
   "epochs": 50,
-  "pretraining": False,
+  "pretraining": True,
   "step_size": 7,
   "feature_extracting": False,
   "learning_rate": 0.001,
   "output_layers": 256,
-  "name": "batch_hard_test"
+  "name": "batch_hard_pretrain"
 }
 
-logging.basicConfig(filename="{}.log".format(model_param["name"]), level=logging.DEBUG, format='%(asctime)s:%(levelname)s::  %(message)s')
+logging.basicConfig(filename="{}.log".format(model_param["name"]), level=logging.INFO, format='%(asctime)s:%(levelname)s::  %(message)s')
 
 logging.info("New model: {}".format(model_param))
 logging.info("Train Batch Size: {}".format(loaders['train'].batch_size))

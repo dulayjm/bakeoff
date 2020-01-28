@@ -14,19 +14,18 @@ class BatchHardLoader(Loader):
 
     super().__init__(data_table, dataset, batch_size)
 
+    self.num_batches = len(self.data_table) // batch_size
+
   def makeBatches(self, batch_size):
     batches = []
 
-    # number of complete batches possible
-    num_batches = len(self.data_table) // batch_size
-    
-    for j in range(num_batches):
+    for j in range(self.num_batches):
       batch = []
       batch_labels = []
       
       # batch size is lesser between preset batch size and images remaining in dataset
       for label in self.map_label_indices:
-        images, labels = self.getSet(label, self.data_table, self.dataset, self.batch_size)
+        images, labels = self.getSet(label, self.data_table, self.dataset, len(batch) - self.batch_size)
         batch.extend(images)
         batch_labels.extend(labels)
 
@@ -39,11 +38,11 @@ class BatchHardLoader(Loader):
       batches.append([batch, batch_labels])
     return batches
 
-  def getSet(self, label, data_table, dataset, batch_size):
+  def getSet(self, label, data_table, dataset, size_remaining):
     label_indices = self.map_label_indices
 
     images, labels = [], []
-    for i in range(min(len(label_indices[label]), batch_size // self.num_classes)):
+    for i in range(min(len(label_indices[label]) // self.num_batches, size_remaining)):
       new_img = label_indices[label].pop(0)
       images.append(dataset[new_img][0])
       labels.append(label)

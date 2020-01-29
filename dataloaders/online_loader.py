@@ -20,22 +20,24 @@ class OnlineLoader(Loader):
     map_label_indices = {label: np.flatnonzero(self.data_table['category_id'] == label).tolist() for label in self.data_table['category_id']}
     classes = list(set(self.data_table['category_id']))
 
-    for i in range(len(self.data_table) // batch_size):
+    index = 0
+    while (index < len(self.data_table)):
       # log progress
       system('clear')
       print("Loading dataloader...")
-      perc = i*50//(len(self.data_table) // batch_size)
+      perc = index*50//len(self.data_table)
       print(">"*perc + "-"*(50-perc))
       
       batch = [[],[]]
       class_idx = 0
-      remaining_labels = self.num_classes
-      while (len(batch[0]) < batch_size):
-        num_class_samples = min((batch_size - len(batch[0])) // remaining_labels, len(map_label_indices[classes[class_idx]]))
-        if (num_class_samples > 1):
-          batch[0].extend(self.dataset[map_label_indices[classes[class_idx]].pop(0)][0] for j in range(num_class_samples))
-          batch[1].extend([classes[class_idx] for g in range(num_class_samples)])
-        remaining_labels = max(remaining_labels-1, 1)
+      for i in range(min(batch_size, len(self.data_table) - index)):
+        num_class_samples = min(batch_size // self.num_classes, batch_size - len(batch[0]))
+        for g in range(num_class_samples):
+          if (len(map_label_indices[classes[class_idx]]) == 0):
+            map_label_indices[classes[class_idx]] = np.flatnonzero(self.data_table['category_id'] == classes[class_idx]).tolist()
+          batch[0].append(self.dataset[map_label_indices[classes[class_idx]].pop(0)][0])
+          batch[1].append(classes[class_idx])
+          index += 1
         class_idx = class_idx+1 if class_idx < len(classes)-1 else 0
       batches.append(batch)
     return batches

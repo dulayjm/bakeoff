@@ -9,8 +9,8 @@ from datasets.TEST import TEST
 from datasets.MNIST import MNIST
 from loss.triplet import TripletLoss
 from loss.batch_hard import BatchHardLoss
-from dataloaders.triplet_loader import TripletLoader
-from dataloaders.batch_hard_loader import BatchHardLoader
+from dataloaders.offline_loader import OfflineLoader
+from dataloaders.online_loader import OnlineLoader
 from dataloaders.loader import Loader
 from accuracy.knearest import KNN
 import numpy as np
@@ -38,7 +38,7 @@ pil_logger.setLevel(logging.INFO)
 logging.info("-"*50)
 logging.info("New Model")
 
-train_loader = BatchHardLoader(data.train_data, data.train_set, 45)
+train_loader = OnlineLoader(data.train_data, data.train_set, 45)
 valid_loader = Loader(data.valid_data, data.valid_set, batch_size=50)
 model_param['loaders'] = {'train':train_loader, 'valid':valid_loader}
 

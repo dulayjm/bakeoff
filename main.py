@@ -9,6 +9,7 @@ from datasets.TEST import TEST
 from datasets.MNIST import MNIST
 from loss.triplet import TripletLoss
 from loss.batch_hard import BatchHardLoss
+from loss.lifted import LiftedLoss
 from dataloaders.offline_loader import OfflineLoader
 from dataloaders.online_loader import OnlineLoader
 from dataloaders.loader import Loader
@@ -19,7 +20,7 @@ data = TEST()
 
 model_param = {
   "loaders": {},
-  "loss_fn": BatchHardLoss(margin=1),
+  "loss_fn": LiftedLoss(margin=1),
   "acc_fn": KNN(),
   "epochs": 50,
   "pretraining": True,
@@ -27,7 +28,7 @@ model_param = {
   "feature_extracting": False,
   "learning_rate": 0.001,
   "output_layers": 256,
-  "name": "TEST_triplets"
+  "name": "TEST_lifted_loss"
 }
 
 # setup logging and turn off PIL plugin logging

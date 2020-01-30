@@ -2,10 +2,11 @@ import logging
 from os import system
 
 class Loader():
-  def __init__(self, data_table, dataset, batch_size):
+  def __init__(self, data_table, dataset, batch_size, name="Loader"):
     self.batch_size = batch_size
     self.dataset = dataset
     self.data_table = data_table
+    self.name = name
 
   def makeBatches(self, batch_size):
     batches = []
@@ -34,3 +35,6 @@ class Loader():
 
   def getSet(self, index, data_table, dataset):
     return [dataset[index][0]], [dataset[index][1]]
+
+  def __str__(self):
+    return "{} with batch size {}".format(self.name, self.batch_size)

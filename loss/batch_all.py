@@ -34,9 +34,8 @@ class BatchAllLoss(nn.Module):
 
         num_instances = len(pos_dist)//n + 1
         num_neg_instances = n - num_instances
-        pos_dist = pos_dist.resize(len(pos_dist)//(num_instances-1), num_instances-1)
-        neg_dist = neg_dist.resize(
-            len(neg_dist)//(num_neg_instances), num_neg_instances)
+        pos_dist = pos_dist.reshape(len(pos_dist)//(num_instances-1), num_instances-1)
+        neg_dist = neg_dist.reshape(len(neg_dist)//(num_neg_instances), num_neg_instances)
 
         loss = list()
         prec = list()
@@ -44,8 +43,8 @@ class BatchAllLoss(nn.Module):
             neg_dist_ = neg_dist[i].repeat(num_instances - 1, 1)
             pos_dist_ = pos_pair.repeat(num_neg_instances, 1)
             pos_dist_ = pos_dist_.t()
-            pos_dist_ = pos_dist_.resize(num_neg_instances * (num_instances - 1))
-            neg_dist_ = neg_dist_.resize(num_neg_instances * (num_instances - 1))
+            pos_dist_ = pos_dist_.reshape(num_neg_instances * (num_instances - 1))
+            neg_dist_ = neg_dist_.reshape(num_neg_instances * (num_instances - 1))
 
             y = neg_dist_.data.new()
             y.resize_as_(neg_dist_.data)

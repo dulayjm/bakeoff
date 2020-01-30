@@ -16,19 +16,19 @@ from dataloaders.loader import Loader
 from accuracy.knearest import KNN
 import numpy as np
 
-data = MNIST()
+data = TEST()
 
 model_param = {
   "loaders": {},
-  "loss_fn": BatchHardLoss(margin=1),
+  "loss_fn": BatchHardLoss(margin=0.2),
   "acc_fn": KNN(),
-  "epochs": 50,
+  "epochs": 20,
   "pretraining": True,
   "step_size": 7,
   "feature_extracting": False,
   "learning_rate": 0.001,
   "output_layers": 256,
-  "name": "MNIST_batch_hard"
+  "name": "TEST_batch_hard_20epoch"
 }
 
 # setup logging and turn off PIL plugin logging
@@ -39,8 +39,8 @@ pil_logger.setLevel(logging.INFO)
 logging.info("-"*50)
 logging.info("New Model")
 
-train_loader = OnlineLoader(data.train_data, data.train_set, 50)
-valid_loader = Loader(data.valid_data, data.valid_set, batch_size=50)
+train_loader = OnlineLoader(data.train_data, data.train_set, 45)
+valid_loader = Loader(data.valid_data, data.valid_set, batch_size=90)
 model_param['loaders'] = {'train':train_loader, 'valid':valid_loader}
 
 for param in model_param:

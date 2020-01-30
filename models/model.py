@@ -26,7 +26,7 @@ class Model():
 
   def train(self):
     start_time = time.time()
-    train_model(self.loaders, self.model, self.loss_fn, self.acc_fn, self.optimizer, self.scheduler, self.epochs)
+    train_model(self.loaders, self.model, self.loss_fn, self.acc_fn, self.optimizer, self.scheduler, self.epochs, name=self.name)
     print('Training time: {:10f} minutes'.format((time.time()-start_time)/60))
 
   def get_optimizer(self, lr):

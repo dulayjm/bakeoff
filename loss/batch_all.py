@@ -38,7 +38,6 @@ class BatchAllLoss(nn.Module):
         neg_dist = neg_dist.resize(
             len(neg_dist)//(num_neg_instances), num_neg_instances)
 
-        #  clear way to compute the loss first
         loss = list()
         prec = list()
         for i, pos_pair in enumerate(pos_dist):

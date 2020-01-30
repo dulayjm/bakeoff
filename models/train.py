@@ -39,13 +39,15 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
 
                 # zero the parameter gradients
                 optimizer.zero_grad()
-                
+
                 images, labels = data
+                logging.debug(torch.stack(images).to(device).shape)
                 outputs = model(torch.stack(images).to(device))
                 labels = torch.IntTensor(labels)
                 # backward + optimize only if in training phase
                 with torch.set_grad_enabled(phase == 'train'):
                     if phase == 'train':
+                        logging.debug(outputs)
                         loss, _, _, _ = loss_fn(outputs, labels)
                         logging.debug("{} batch {} loss: {}".format(phase, batch_num, loss))
 

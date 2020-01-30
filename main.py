@@ -20,7 +20,7 @@ data = MNIST()
 
 model_param = {
   "loaders": {},
-  "loss_fn": BatchAllLoss(margin=1),
+  "loss_fn": BatchHardLoss(margin=1),
   "acc_fn": KNN(),
   "epochs": 50,
   "pretraining": True,
@@ -28,11 +28,11 @@ model_param = {
   "feature_extracting": False,
   "learning_rate": 0.001,
   "output_layers": 256,
-  "name": "TEST_batch_all"
+  "name": "MNIST_batch_hard"
 }
 
 # setup logging and turn off PIL plugin logging
-logging.basicConfig(filename="{}.log".format(model_param["name"]), level=logging.INFO, format='%(asctime)s:%(name)s:%(levelname)s::  %(message)s')
+logging.basicConfig(filename="{}.log".format(model_param["name"]), level=logging.DEBUG, format='%(asctime)s:%(name)s:%(levelname)s::  %(message)s')
 pil_logger = logging.getLogger('PIL')
 pil_logger.setLevel(logging.INFO)
 

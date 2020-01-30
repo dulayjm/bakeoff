@@ -5,7 +5,7 @@ class KNN():
     j = 0
     corrects = 0
     for anchor in outputs:
-      test_data, test_labels = self.removeAtIndex([outputs.tolist(), labels], j)
+      test_data, test_labels = self.removeAtIndex([outputs.tolist(), labels.tolist()], j)
       test_data = [torch.FloatTensor(embedding) for embedding in test_data]
       anchor_label = labels[j]
       correct = self.correct(anchor, anchor_label, torch.stack(test_data), test_labels)

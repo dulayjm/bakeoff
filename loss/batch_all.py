@@ -57,3 +57,6 @@ class BatchAllLoss(nn.Module):
         neg_dist_mean = torch.mean(neg_dist).item()
         pos_dist_mean = torch.mean(pos_dist).item()
         return loss, prec, pos_dist_mean, neg_dist_mean
+    
+    def __str__(self):
+        return "Batch All, margin = {}".format(self.margin)

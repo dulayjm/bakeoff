@@ -20,7 +20,7 @@ data = TEST()
 
 model_param = {
   "loaders": {},
-  "loss_fn": BatchHardLoss(margin=0.2),
+  "loss_fn": BatchHardLoss(margin=1),
   "acc_fn": KNN(),
   "epochs": 20,
   "pretraining": True,
@@ -28,7 +28,7 @@ model_param = {
   "feature_extracting": False,
   "learning_rate": 0.001,
   "output_layers": 256,
-  "name": "TEST_batch_hard_20epoch"
+  "name": "TEST_batch_hard_20epoch_1margin"
 }
 
 # setup logging and turn off PIL plugin logging

@@ -32,9 +32,9 @@ model_param = {
   "pretraining": False,
   "step_size": 7,
   "feature_extracting": False,
-  "learning_rate": 0.001,
+  "learning_rate": 0.01,
   "output_layers": 256,
-  "name": "TEST_batch_all_20epoch_randinit"
+  "name": "TEST_triplet_20epoch_randinit"
 }
 
 # setup logging and turn off PIL plugin logging
@@ -45,7 +45,7 @@ pil_logger.setLevel(logging.INFO)
 logging.info("-"*50)
 logging.info("New Model")
 
-train_loader = OnlineLoader(data.train_data, data.train_set, 45)
+train_loader = OfflineLoader(data.train_data, data.train_set, 45)
 valid_loader = Loader(data.valid_data, data.valid_set, batch_size=90)
 model_param['loaders'] = {'train':train_loader, 'valid':valid_loader}
 

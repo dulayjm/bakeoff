@@ -1,24 +1,30 @@
 import numpy as np
 import torch
+from torch import nn
 
 from loss.loss import Loss
 
-class TripletLoss(Loss):
-   def __init__(self, margin=1.0):
-      super().__init__(torch.nn.TripletMarginLoss(margin=margin, p=2), "Offline Triplet")
+class TripletLoss(nn.Module):
+   def __init__(self, margin=0.2):
+        super(TripletLoss, self).__init__()
+        self.margin = margin
+        self.ranking_loss = nn.TripletMarginLoss(margin=self.margin, p=2)
 
-   def getLoss(self, batch, labels, device="cpu"):
+   def forward(self, outputs, labels):
       running_loss = 0
-      assert batch.shape[0] % 3 == 0, "Triplet loss requires batches to be composed of triplets"
-      assert type(batch) == torch.Tensor, "Outputs must be a tensor"
+      assert outputs.shape[0] % 3 == 0, "Triplet loss requires outputses to be composed of triplets"
+      assert type(outputs) == torch.Tensor, "Outputs must be a tensor"
 
       i = 0
-      while (i < batch.shape[0]):
-         anchor = batch[i].unsqueeze(0)
-         pos = batch[i+1].unsqueeze(0)
-         neg = batch[i+2].unsqueeze(0)
-         running_loss += self.eval(anchor, pos, neg)
+      while (i < outputs.shape[0]):
+         anchor = outputs[i].unsqueeze(0)
+         pos = outputs[i+1].unsqueeze(0)
+         neg = outputs[i+2].unsqueeze(0)
+         running_loss += self.ranking_loss(anchor, pos, neg)
          i += 3
       
-      # return average loss for batch
-      return running_loss / (batch.shape[0] / 3)
+      # return average loss for outputs
+      return running_loss / (outputs.shape[0] / 3), 0, 0, 0
+
+   def __str__(self):
+        return "Triplet, margin = {}".format(self.margin)

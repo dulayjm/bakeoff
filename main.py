@@ -20,6 +20,8 @@ import numpy as np
 parser = argparse.ArgumentParser(description='PyTorch Training')
 parser.add_argument('-loss', default='triplet', required=True,
                     help='path to dataset')
+parser.add_argument('-name', default='model', required=True,
+                    help='path to dataset')
 args = parser.parse_args()
 
 data = TEST()
@@ -28,13 +30,13 @@ model_param = {
   "loaders": {},
   "loss_fn": loss.create(args.loss),
   "acc_fn": KNN(),
-  "epochs": 20,
+  "epochs": 10,
   "pretraining": False,
   "step_size": 7,
   "feature_extracting": False,
-  "learning_rate": 0.01,
+  "learning_rate": 0.001,
   "output_layers": 256,
-  "name": "TEST_triplet_20epoch_randinit"
+  "name": args.name
 }
 
 # setup logging and turn off PIL plugin logging
@@ -45,8 +47,8 @@ pil_logger.setLevel(logging.INFO)
 logging.info("-"*50)
 logging.info("New Model")
 
-train_loader = OfflineLoader(data.train_data, data.train_set, 45)
-valid_loader = Loader(data.valid_data, data.valid_set, batch_size=90)
+train_loader = OnlineLoader(data.train_data, data.train_set, 15)
+valid_loader = Loader(data.valid_data, data.valid_set, batch_size=15)
 model_param['loaders'] = {'train':train_loader, 'valid':valid_loader}
 
 for param in model_param:

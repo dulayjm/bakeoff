@@ -22,6 +22,7 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
 
         running_loss = 0.0
         running_acc = 0.0
+        image_count = 0
 
         for phase in dataloaders:
             logging.info("Entering {} phase...".format(phase))
@@ -55,16 +56,17 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                         optimizer.step()
 
                         # track epoch total loss
-                        running_loss += loss.data.item() * min(dataloaders[phase].batch_size, len(images))
+                        running_loss += loss.data.item() * len(images)
+                        image_count += len(images)
                     elif phase == 'valid':
                         acc = acc_fn.get_acc(outputs, labels)
                         logging.debug("{} batch {} top 1 acc: {}".format(phase, batch_num, acc))
-                        running_acc += acc * min(dataloaders[phase].batch_size, len(images))
+                        running_acc += acc * len(images)
                 batch_num += 1
 
             scheduler.step()
 
-        epoch_loss = running_loss / len(dataloaders["train"].dataset)
+        epoch_loss = running_loss / image_count
         epoch_acc = running_acc / len(dataloaders["valid"].dataset)
         best_acc = epoch_acc if epoch_acc > best_acc else best_acc
 

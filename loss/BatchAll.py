@@ -3,6 +3,8 @@ from torch import nn
 from torch.autograd import Variable
 import numpy as np
 
+import logging
+
 
 def euclidean_dist(inputs_):
     # Compute pairwise distance, replace by the official when merged

@@ -29,7 +29,7 @@ class OnlineLoader(Loader):
       
       batch = [[],[]]
       class_idx = 0
-      for i in range(min(batch_size, len(self.data_table) - index)):
+      for i in range(batch_size):
         num_class_samples = min(batch_size // self.num_classes, batch_size - len(batch[0]))
         for g in range(num_class_samples):
           if (len(map_label_indices[classes[class_idx]]) == 0):

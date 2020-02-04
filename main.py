@@ -47,7 +47,13 @@ pil_logger.setLevel(logging.INFO)
 logging.info("-"*50)
 logging.info("New Model")
 
-train_loader = OnlineLoader(data.train_data, data.train_set, 50)
+loaders = {
+  'triplet': OfflineLoader,
+  'batchall': OnlineLoader,
+  'batchhard': OnlineLoader,
+  'badbatchall': OnlineLoader
+}
+train_loader = loaders[args.loss](data.train_data, data.train_set, 50)
 valid_loader = Loader(data.valid_data, data.valid_set, batch_size=132)
 model_param['loaders'] = {'train':train_loader, 'valid':valid_loader}
 

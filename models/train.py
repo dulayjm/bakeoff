@@ -4,7 +4,7 @@ import torch
 from os import system
 import pandas as pd
 
-def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_epochs=10, name="model"):
+def train_model(dataloaders, model, criterion, acc_fn, optimizer, scheduler, num_epochs=10, name="model"):
     since = time.time()
 
     # send to the gpu if available
@@ -19,6 +19,12 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
     for epoch in range(num_epochs):
         logging.info('Beginning Epoch {}/{}'.format(epoch+1, num_epochs))
         print('Epoch {}/{}'.format(epoch+1, num_epochs))
+
+        if (epoch % 15 == 0):
+            batched_data = {
+                'train': dataloaders['train'].makeBatches(dataloaders['train'].batch_size),
+                'valid': dataloaders['valid'].makeBatches(dataloaders['valid'].batch_size)
+            }
 
         running_loss = 0.0
         running_acc = 0.0
@@ -35,9 +41,8 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
             running_batch = 0
             
             batch_num = 1
-            batched_data = dataloaders[phase].makeBatches(dataloaders[phase].batch_size)
-            for data in batched_data:
-                print("{} batch {} of {}".format(phase, batch_num, len(batched_data)))
+            for data in batched_data[phase]:
+                print("{} batch {} of {}".format(phase, batch_num, len(batched_data[phase])))
 
                 # zero the parameter gradients
                 optimizer.zero_grad()
@@ -49,9 +54,8 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                 # backward + optimize only if in training phase
                 with torch.set_grad_enabled(phase == 'train'):
                     if phase == 'train':
-                        loss, _, _, _ = loss_fn(outputs, labels)
+                        loss, _, _, _ = criterion(outputs, labels)
                         logging.debug("{} batch {} loss: {}".format(phase, batch_num, loss))
-
                         loss.backward()
                         optimizer.step()
 
@@ -64,7 +68,7 @@ def train_model(dataloaders, model, loss_fn, acc_fn, optimizer, scheduler, num_e
                         running_acc += acc * len(images)
                 batch_num += 1
 
-            scheduler.step()
+        scheduler.step()
 
         epoch_loss = running_loss / image_count
         epoch_acc = running_acc / len(dataloaders["valid"].dataset)

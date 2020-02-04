@@ -1,12 +1,14 @@
 from .triplet import TripletLoss
 from .BatchHard import BatchHardLoss
 from .BatchAll import BatchAllLoss
+from .BadBatchAll import BadBatchAllLoss
 import torch.nn as nn
 
 __factory = {
     'triplet': TripletLoss,
     'batchhard': BatchHardLoss,
     'batchall': BatchAllLoss,
+    'badbatchall': BadBatchAllLoss
 }
 
 

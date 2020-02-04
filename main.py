@@ -24,15 +24,15 @@ parser.add_argument('-name', default='model', required=True,
                     help='path to dataset')
 args = parser.parse_args()
 
-data = TEST()
+data = MNIST()
 
 model_param = {
   "loaders": {},
   "loss_fn": loss.create(args.loss),
   "acc_fn": KNN(),
-  "epochs": 10,
+  "epochs": 50,
   "pretraining": False,
-  "step_size": 7,
+  "step_size": 30,
   "feature_extracting": False,
   "learning_rate": 0.001,
   "output_layers": 256,
@@ -47,8 +47,8 @@ pil_logger.setLevel(logging.INFO)
 logging.info("-"*50)
 logging.info("New Model")
 
-train_loader = OnlineLoader(data.train_data, data.train_set, 15)
-valid_loader = Loader(data.valid_data, data.valid_set, batch_size=15)
+train_loader = OnlineLoader(data.train_data, data.train_set, 50)
+valid_loader = Loader(data.valid_data, data.valid_set, batch_size=132)
 model_param['loaders'] = {'train':train_loader, 'valid':valid_loader}
 
 for param in model_param:

@@ -84,10 +84,8 @@ def train_model(dataloaders, model, criterion, acc_fn, optimizer, scheduler, num
     df.to_csv('{}.csv'.format(name))
 
     time_elapsed = time.time() - since
-    print('Training complete in {:.0f}m {:.0f}s'.format(
+    logging.info('Training complete in {:.0f}m {:.0f}s'.format(
         time_elapsed / 60, time_elapsed % 60))
-    print('Best val Acc: {:4f}'.format(best_acc))
+    logging.info('Best val Acc: {:4f}'.format(best_acc))
 
-    # load best model weights
-    # model.load_state_dict(best_model_wts)
     return model

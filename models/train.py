@@ -77,7 +77,7 @@ def train_model(dataloaders, model, criterion, acc_fn, optimizer, scheduler, num
         logging.info("Train loss: {}".format(epoch_loss))
         logging.info("Valid acc: {}".format(epoch_acc))
 
-        results.append(['{}/{}'.format(epoch+1, num_epochs), epoch_loss, epoch_acc])
+        results.append([epoch+1, epoch_loss, epoch_acc])
 
     # output metrics to CSV
     df = pd.DataFrame(results, columns=['epoch', 'train loss', 'valid accuracy'])

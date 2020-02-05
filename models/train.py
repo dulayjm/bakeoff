@@ -20,7 +20,7 @@ def train_model(dataloaders, model, criterion, acc_fn, optimizer, scheduler, num
         logging.info('Beginning Epoch {}/{}'.format(epoch+1, num_epochs))
         print('Epoch {}/{}'.format(epoch+1, num_epochs))
 
-        if (epoch % 15 == 0):
+        if (epoch % 1 == 0):
             batched_data = {
                 'train': dataloaders['train'].makeBatches(dataloaders['train'].batch_size),
                 'valid': dataloaders['valid'].makeBatches(dataloaders['valid'].batch_size)

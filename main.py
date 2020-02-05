@@ -26,8 +26,11 @@ args = parser.parse_args()
 
 data = TEST()
 
+train_loader = dataloader.create(args.loss, data.train_data, data.train_set, 45)
+valid_loader = dataloader.create(args.acc, data.valid_data, data.valid_set, batch_size=132)
+
 model_param = {
-  "loaders": {},
+  "loaders": {'train':train_loader, 'valid':valid_loader},
   "loss_fn": loss.create(args.loss),
   "acc_fn": accuracy.create(args.acc),
   "epochs": 50,
@@ -46,10 +49,6 @@ pil_logger.setLevel(logging.INFO)
 
 logging.info("-"*50)
 logging.info("New Model")
-
-train_loader = dataloader.create(args.loss, data.train_data, data.train_set, 45)
-valid_loader = dataloader.create(args.acc, data.valid_data, data.valid_set, batch_size=132)
-model_param['loaders'] = {'train':train_loader, 'valid':valid_loader}
 
 for param in model_param:
   logging.info("{}: {}".format(param, str(model_param[param])))

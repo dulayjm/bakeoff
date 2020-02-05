@@ -42,6 +42,9 @@ model_param = {
   "name": args.name
 }
 
+model = Resnet(model_param["loaders"], model_param["loss_fn"], model_param["acc_fn"], model_param["epochs"], model_param["pretraining"], 
+                model_param["step_size"], model_param["feature_extracting"], model_param["learning_rate"], model_param["output_layers"], model_param["name"])
+
 # setup logging and turn off PIL plugin logging
 logging.basicConfig(filename="{}.log".format(model_param["name"]), level=logging.INFO, format='%(asctime)s:%(name)s:%(levelname)s::  %(message)s')
 pil_logger = logging.getLogger('PIL')
@@ -53,6 +56,4 @@ logging.info("New Model")
 for param in model_param:
   logging.info("{}: {}".format(param, str(model_param[param])))
 
-resnet = Resnet(model_param["loaders"], model_param["loss_fn"], model_param["acc_fn"], model_param["epochs"], model_param["pretraining"], 
-                model_param["step_size"], model_param["feature_extracting"], model_param["learning_rate"], model_param["output_layers"], model_param["name"])
-resnet.train()
+model.train()

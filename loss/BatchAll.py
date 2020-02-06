@@ -53,12 +53,8 @@ class BatchAllLoss(nn.Module):
             y.fill_(1)
             y = Variable(y)
             loss.append(self.ranking_loss(neg_dist_, pos_dist_, y))
-            prec.append((neg_dist_.data > pos_dist_.data).sum() * 1. / y.size(0))
         loss = torch.mean(torch.stack([loss_ for loss_ in loss]))
-        prec = np.mean(prec)
-        neg_dist_mean = torch.mean(neg_dist).item()
-        pos_dist_mean = torch.mean(pos_dist).item()
-        return loss, prec, pos_dist_mean, neg_dist_mean
+        return loss
     
     def __str__(self):
         return "Batch All, margin = {}".format(self.margin)

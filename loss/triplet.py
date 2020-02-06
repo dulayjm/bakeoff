@@ -22,7 +22,7 @@ class TripletLoss(nn.Module):
          i += 3
       
       # return average loss for outputs
-      return running_loss / (outputs.shape[0] / 3), 0, 0, 0
+      return running_loss / (outputs.shape[0] / 3)
 
    def __str__(self):
         return "Triplet, margin = {}".format(self.margin)

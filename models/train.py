@@ -50,7 +50,7 @@ def train_model(dataloaders, model, criterion, acc_fn, optimizer, scheduler, num
                 outputs = model(torch.stack(images).to(device))
                 labels = torch.IntTensor(labels)
 
-                loss, _, _, _ = criterion(outputs, labels)
+                loss = criterion(outputs, labels)
                 logging.debug("{} batch {} loss: {}".format(phase, num_batches, loss))
 
                 # backward + optimize only if in training phase

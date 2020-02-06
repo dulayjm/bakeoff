@@ -21,7 +21,7 @@ class BadBatchAllLoss(nn.Module):
               triplet_count += 1
     
     # return average loss for outputs
-    return running_loss / triplet_count, 0, 0, 0
+    return running_loss / triplet_count
 
   def __str__(self):
       return "Bad Batch All, margin = {}".format(self.margin)

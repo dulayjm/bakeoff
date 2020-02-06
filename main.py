@@ -69,7 +69,7 @@ model = models.create(args.model,
               )
 
 # setup logging and turn off PIL plugin logging
-logging.basicConfig(filename="logs/{}.log".format(model_param["name"]), level=logging.INFO, format='%(asctime)s:%(name)s:%(levelname)s::  %(message)s')
+logging.basicConfig(filename="logs/{}.log".format(model_param["name"]), level=logging.DEBUG, format='%(asctime)s:%(name)s:%(levelname)s::  %(message)s')
 pil_logger = logging.getLogger('PIL')
 pil_logger.setLevel(logging.INFO)
 

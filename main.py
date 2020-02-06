@@ -13,9 +13,9 @@ import numpy as np
 parser = argparse.ArgumentParser(description='PyTorch Training')
 parser.add_argument('-model', default='resnet', required=False,
                     help='model architecture')
-parser.add_argument('-loss', default='batchall', required=False,
+parser.add_argument('-loss_fn', default='batchall', required=False,
                     help='loss function')
-parser.add_argument('-acc', default='knn', required=False,
+parser.add_argument('-acc_fn', default='knn', required=False,
                     help='accuracy evaluation function')
 parser.add_argument('-epochs', default=50, required=False,
                     help='number of epochs')
@@ -37,12 +37,9 @@ parser.add_argument('-batch_size', default=45, required=True,
                     help='samples per training batch')
 args = parser.parse_args()
 
-data = datasets.create(args.dataset)
-
-train_loader = dataloader.create(args.loss, data.train_data, data.train_set, int(args.batch_size))
-valid_loader = dataloader.create(args.acc, data.valid_data, data.valid_set, int(args.batch_size))
-
 model_param = {
+  "dataset": args.dataset
+  "batch size": int(args.batch_size)
   "loaders": {'train':train_loader, 'valid':valid_loader},
   "loss_fn": loss.create(args.loss),
   "acc_fn": accuracy.create(args.acc),
@@ -54,6 +51,11 @@ model_param = {
   "output_layers": int(args.output_layers),
   "name": args.name
 }
+
+data = datasets.create(model_param["dataset"])
+
+train_loader = dataloader.create(model_param["loss_fn"], data.train_data, data.train_set, model_param["batch_size"])
+valid_loader = dataloader.create(model_param["acc_fn"], data.valid_data, data.valid_set, model_param["batch_size"])
 
 model = models.create(args.model,
                 model_param["loaders"], 

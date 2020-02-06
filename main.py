@@ -3,9 +3,7 @@ import argparse
 import logging
 import sys
 
-from models.resnet import Resnet
-from models.alexnet import Alexnet
-from models.googlenet import Googlenet
+import models
 import datasets
 import loss
 import dataloader
@@ -13,6 +11,8 @@ import accuracy
 import numpy as np
 
 parser = argparse.ArgumentParser(description='PyTorch Training')
+parser.add_argument('-model', default='resnet', required=False,
+                    help='model architecture')
 parser.add_argument('-loss', default='batchall', required=False,
                     help='loss function')
 parser.add_argument('-acc', default='knn', required=False,
@@ -57,8 +57,18 @@ model_param = {
   "name": args.name
 }
 
-model = Resnet(model_param["loaders"], model_param["loss_fn"], model_param["acc_fn"], model_param["epochs"], model_param["pretraining"], 
-                model_param["step_size"], model_param["feature_extracting"], model_param["learning_rate"], model_param["output_layers"], model_param["name"])
+model = models.create(args.model,
+                model_param["loaders"], 
+                model_param["loss_fn"], 
+                model_param["acc_fn"], 
+                model_param["epochs"], 
+                model_param["pretraining"], 
+                model_param["step_size"], 
+                model_param["feature_extracting"], 
+                model_param["learning_rate"], 
+                model_param["output_layers"], 
+                model_param["name"]
+              )
 
 # setup logging and turn off PIL plugin logging
 logging.basicConfig(filename="logs/{}.log".format(model_param["name"]), level=logging.INFO, format='%(asctime)s:%(name)s:%(levelname)s::  %(message)s')

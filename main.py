@@ -35,14 +35,12 @@ parser.add_argument('-dataset', default='MNIST', required=True,
                     help='samples per training batch')
 parser.add_argument('-batch_size', default=45, required=True,
                     help='samples per training batch')
-parser.add_argument('-valid_batch_size', default=45, required=False,
-                    help='samples per validation batch')
 args = parser.parse_args()
 
 data = datasets.create(args.dataset)
 
-train_loader = dataloader.create(args.loss, data.train_data, data.train_set, 45)
-valid_loader = dataloader.create(args.acc, data.valid_data, data.valid_set, batch_size=132)
+train_loader = dataloader.create(args.loss, data.train_data, data.train_set, int(args.batch_size))
+valid_loader = dataloader.create(args.acc, data.valid_data, data.valid_set, int(args.batch_size))
 
 model_param = {
   "loaders": {'train':train_loader, 'valid':valid_loader},

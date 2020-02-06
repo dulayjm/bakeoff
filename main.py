@@ -3,6 +3,7 @@ import numpy as np
 import argparse
 import logging
 import sys
+import os
 
 import models
 import datasets
@@ -70,8 +71,11 @@ model = models.create(args.model,
                 model_param["name"]
               )
 
+if not os.path.exists("results/{}/".format(model_param["name"])):
+    os.makedirs("results/{}/".format(model_param["name"]))
+
 # setup logging and turn off PIL plugin logging
-logging.basicConfig(filename="logs/{}.log".format(model_param["name"]), level=logging.DEBUG, format='%(asctime)s:%(name)s:%(levelname)s::  %(message)s')
+logging.basicConfig(filename="results/{}/training.log".format(model_param["name"]), level=logging.DEBUG, format='%(asctime)s:%(name)s:%(levelname)s::  %(message)s')
 pil_logger = logging.getLogger('PIL')
 pil_logger.setLevel(logging.INFO)
 

@@ -3,6 +3,7 @@ import logging
 import torch
 from os import system
 import pandas as pd
+import matplotlib.pyplot as plt
 
 def train_model(dataloaders, model, criterion, acc_fn, optimizer, scheduler, num_epochs=10, name="model"):
     since = time.time()
@@ -77,8 +78,32 @@ def train_model(dataloaders, model, criterion, acc_fn, optimizer, scheduler, num
         scheduler.step()
 
     # output metrics to CSV
-    df = pd.DataFrame(results, columns=['epoch', 'phase', 'loss', 'accuracy'])
-    df.to_csv('results/{}.csv'.format(name), index = False)
+    results = pd.DataFrame(results, columns=['epoch', 'phase', 'loss', 'accuracy'])
+    results.to_csv('results/{}/results.csv'.format(name), index = False)
+    
+    # seperate into training and validation dataframes
+    train = []
+    valid = []
+    for index, row in results.iterrows():
+        if row['phase'] == 'train':
+            train.append([row['epoch'], row['loss'], row['accuracy']])
+        elif row['phase'] == 'valid':
+            valid.append([row['epoch'], row['loss'], row['accuracy']])
+    train = pd.DataFrame(train, columns=['epoch', 'loss', 'accuracy'])
+    valid = pd.DataFrame(valid, columns=['epoch', 'loss', 'accuracy'])
+
+    # plot the training vs validation metrics
+    train_loss, = plt.plot(train['epoch'], train['loss'], label = "Training Loss")
+    valid_loss, = plt.plot(valid['epoch'], valid['loss'], label = "Validation Loss")
+    plt.legend(handles=[train_loss, valid_loss])
+    plt.title(name)
+    plt.savefig('results/{}/loss.png'.format(name))
+    plt.clf()
+    train_loss, = plt.plot(train['epoch'], train['accuracy'], label = "Training Accuracy")
+    valid_loss, = plt.plot(valid['epoch'], valid['accuracy'], label = "Validation Loss")
+    plt.legend(handles=[train_loss, valid_loss])
+    plt.title(name)
+    plt.savefig('results/{}/acc.png'.format(name))
 
     time_elapsed = time.time() - since
     logging.info('Training complete in {:.0f}m {:.0f}s'.format(

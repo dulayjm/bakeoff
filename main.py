@@ -6,10 +6,7 @@ import sys
 from models.resnet import Resnet
 from models.alexnet import Alexnet
 from models.googlenet import Googlenet
-from datasets.CUB import CUB
-from datasets.CARS import CARS
-from datasets.TEST import TEST
-from datasets.MNIST import MNIST
+import datasets
 import loss
 import dataloader
 import accuracy
@@ -34,9 +31,15 @@ parser.add_argument('-output_layers', default=256, required=False,
                     help='number of output layers')
 parser.add_argument('-name', default='model', required=True,
                     help='custom model name')
+parser.add_argument('-dataset', default='MNIST', required=True,
+                    help='samples per training batch')
+parser.add_argument('-batch_size', default=45, required=True,
+                    help='samples per training batch')
+parser.add_argument('-valid_batch_size', default=45, required=False,
+                    help='samples per validation batch')
 args = parser.parse_args()
 
-data = TEST()
+data = datasets.create(args.dataset)
 
 train_loader = dataloader.create(args.loss, data.train_data, data.train_set, 45)
 valid_loader = dataloader.create(args.acc, data.valid_data, data.valid_set, batch_size=132)
@@ -49,7 +52,7 @@ model_param = {
   "pretraining": bool(args.pretrain),
   "step_size": int(args.step_size),
   "feature_extracting": bool(args.feature_extracting),
-  "learning_rate": int(args.lr),
+  "learning_rate": float(args.lr),
   "output_layers": int(args.output_layers),
   "name": args.name
 }

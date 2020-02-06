@@ -81,7 +81,7 @@ def train_model(dataloaders, model, criterion, acc_fn, optimizer, scheduler, num
 
     # output metrics to CSV
     df = pd.DataFrame(results, columns=['epoch', 'train loss', 'valid accuracy'])
-    df.to_csv('{}.csv'.format(name))
+    df.to_csv('results/{}.csv'.format(name))
 
     time_elapsed = time.time() - since
     logging.info('Training complete in {:.0f}m {:.0f}s'.format(

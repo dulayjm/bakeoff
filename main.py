@@ -1,4 +1,5 @@
 from __future__ import absolute_import, print_function
+import numpy as np
 import argparse
 import logging
 import sys
@@ -8,7 +9,6 @@ import datasets
 import loss
 import dataloader
 import accuracy
-import numpy as np
 
 parser = argparse.ArgumentParser(description='PyTorch Training')
 parser.add_argument('-model', default='resnet', required=False,
@@ -37,12 +37,17 @@ parser.add_argument('-batch_size', default=45, required=True,
                     help='samples per training batch')
 args = parser.parse_args()
 
+data = datasets.create(args.dataset)
+
+train_loader = dataloader.create(args.loss_fn, data.train_data, data.train_set, int(args.batch_size))
+valid_loader = dataloader.create(args.acc_fn, data.valid_data, data.valid_set, int(args.batch_size))
+
 model_param = {
-  "dataset": args.dataset
-  "batch size": int(args.batch_size)
+  "dataset": args.dataset,
+  "batch size": int(args.batch_size),
   "loaders": {'train':train_loader, 'valid':valid_loader},
-  "loss_fn": loss.create(args.loss),
-  "acc_fn": accuracy.create(args.acc),
+  "loss_fn": loss.create(args.loss_fn),
+  "acc_fn": accuracy.create(args.acc_fn),
   "epochs": int(args.epochs),
   "pretraining": bool(args.pretrain),
   "step_size": int(args.step_size),
@@ -51,11 +56,6 @@ model_param = {
   "output_layers": int(args.output_layers),
   "name": args.name
 }
-
-data = datasets.create(model_param["dataset"])
-
-train_loader = dataloader.create(model_param["loss_fn"], data.train_data, data.train_set, model_param["batch_size"])
-valid_loader = dataloader.create(model_param["acc_fn"], data.valid_data, data.valid_set, model_param["batch_size"])
 
 model = models.create(args.model,
                 model_param["loaders"], 

@@ -30,6 +30,8 @@ class BatchAllLoss(nn.Module):
         eyes_ = Variable(torch.eye(n, n))
         pos_mask = targets.expand(n, n).eq(targets.expand(n, n).t())
         neg_mask = eyes_.eq(eyes_) ^ pos_mask
+
+
         pos_mask = pos_mask ^ eyes_.eq(1)
         pos_dist = torch.masked_select(dist_mat, pos_mask)
         neg_dist = torch.masked_select(dist_mat, neg_mask)
@@ -40,7 +42,6 @@ class BatchAllLoss(nn.Module):
         neg_dist = neg_dist.reshape(len(neg_dist)//(num_neg_instances), num_neg_instances)
 
         loss = list()
-        prec = list()
         for i, pos_pair in enumerate(pos_dist):
             neg_dist_ = neg_dist[i].repeat(num_instances - 1, 1)
             pos_dist_ = pos_pair.repeat(num_neg_instances, 1)
@@ -58,3 +59,26 @@ class BatchAllLoss(nn.Module):
     
     def __str__(self):
         return "Batch All, margin = {}".format(self.margin)
+
+def main():
+    data_size = 150
+    input_dim = 28
+    output_dim = 256
+    num_class = 15
+    # margin = 0.5
+    x = Variable(torch.rand(data_size, input_dim, input_dim), requires_grad=False)
+    w = Variable(torch.rand(input_dim, output_dim), requires_grad=True)
+    print('training data is ', x.shape)
+    print('initial parameters are ', w.shape)
+    for i, img in enumerate(x):
+        x[i] = x[i].mm(w)
+    print('extracted feature is :', inputs.shape)
+
+    # y_ = np.random.randint(num_class, size=data_size)
+    y_ = 8*list(range(num_class))
+    targets = Variable(torch.IntTensor(y_))
+    print(BatchAllLoss(margin=0.2)(inputs, targets))
+
+
+if __name__ == '__main__':
+    main()

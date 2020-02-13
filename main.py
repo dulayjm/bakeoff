@@ -41,7 +41,7 @@ args = parser.parse_args()
 data = datasets.create(args.dataset)
 
 train_loader = dataloader.create(args.loss_fn, data.train_data, data.train_set, int(args.batch_size))
-valid_loader = dataloader.create(args.acc_fn, data.valid_data, data.valid_set, int(args.batch_size))
+valid_loader = dataloader.create(args.loss_fn, data.valid_data, data.valid_set, int(args.batch_size))
 
 model_param = {
   "dataset": args.dataset,
@@ -75,7 +75,7 @@ if not os.path.exists("results/{}/".format(model_param["name"])):
     os.makedirs("results/{}/".format(model_param["name"]))
 
 # setup logging and turn off PIL plugin logging
-logging.basicConfig(filename="results/{}/training.log".format(model_param["name"]), level=logging.DEBUG, format='%(asctime)s:%(name)s:%(levelname)s::  %(message)s')
+logging.basicConfig(filename="results/{}/training.log".format(model_param["name"]), level=logging.INFO, format='%(asctime)s:%(name)s:%(levelname)s::  %(message)s')
 pil_logger = logging.getLogger('PIL')
 pil_logger.setLevel(logging.INFO)
 

@@ -100,7 +100,7 @@ def train_model(dataloaders, model, criterion, acc_fn, optimizer, scheduler, num
     plt.savefig('results/{}/loss.png'.format(name))
     plt.clf()
     train_loss, = plt.plot(train['epoch'], train['accuracy'], label = "Training Accuracy")
-    valid_loss, = plt.plot(valid['epoch'], valid['accuracy'], label = "Validation Loss")
+    valid_loss, = plt.plot(valid['epoch'], valid['accuracy'], label = "Validation Accuracy")
     plt.legend(handles=[train_loss, valid_loss])
     plt.title(name)
     plt.savefig('results/{}/acc.png'.format(name))

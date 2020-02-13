@@ -10,7 +10,7 @@ class TripletLoss(nn.Module):
 
    def forward(self, outputs, labels):
       running_loss = 0
-      assert outputs.shape[0] % 3 == 0, "Triplet loss requires outputses to be composed of triplets"
+      assert outputs.shape[0] % 3 == 0, "Triplet loss requires outputs to be composed of triplets, but shape was {}".format(outputs.shape)
       assert type(outputs) == torch.Tensor, "Outputs must be a tensor"
 
       i = 0

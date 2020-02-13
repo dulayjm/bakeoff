@@ -13,7 +13,7 @@ class OfflineLoader(Loader):
 
   def getSet(self, index, data_table, dataset):
     # set anchor to next image in data table
-    anchor_class_id = data_table.loc[index, 'category_id']
+    anchor_class_id = dataset[index][1]
     neg_class_id = anchor_class_id
     # select different class for negative example
     while (anchor_class_id == neg_class_id):

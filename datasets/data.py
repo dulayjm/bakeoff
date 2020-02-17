@@ -18,8 +18,8 @@ class Data():
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         ])
 
-        self.train_set = TargetDataset(self.train_data, self.data_dir, transform = self.transform)
-        self.valid_set = TargetDataset(self.valid_data, self.data_dir, transform = self.transform)
+        self.train = Subset(self.train_data, self.data_dir, self.transform)
+        self.valid = Subset(self.valid_data, self.data_dir, self.transform)
 
     def sort_classes(self):
         classes = listdir(self.data_dir)
@@ -39,3 +39,15 @@ class Data():
         # shuffle valid_data
         valid_data = valid_data.sample(frac=1)
         return train_data, valid_data
+        
+    
+class Subset():
+    def __init__(self, table, data_dir, transform):
+        self.table = table
+        self.data_dir = data_dir
+        self.transform = transform
+        self.set = TargetDataset(self.table, self.data_dir, transform = self.transform)
+
+    def shuffle(self):
+        self.table = self.table.sample(frac=1)
+        self.set = TargetDataset(self.table, self.data_dir, transform = self.transform)

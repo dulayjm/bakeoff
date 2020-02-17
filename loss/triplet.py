@@ -2,8 +2,6 @@ import numpy as np
 import torch
 from torch import nn
 
-from loss.loss import Loss
-
 class TripletLoss(nn.Module):
    def __init__(self, margin=0.2):
         super(TripletLoss, self).__init__()
@@ -12,7 +10,7 @@ class TripletLoss(nn.Module):
 
    def forward(self, outputs, labels):
       running_loss = 0
-      assert outputs.shape[0] % 3 == 0, "Triplet loss requires outputses to be composed of triplets"
+      assert outputs.shape[0] % 3 == 0, "Triplet loss requires outputs to be composed of triplets, but shape was {}".format(outputs.shape)
       assert type(outputs) == torch.Tensor, "Outputs must be a tensor"
 
       i = 0
@@ -24,7 +22,7 @@ class TripletLoss(nn.Module):
          i += 3
       
       # return average loss for outputs
-      return running_loss / (outputs.shape[0] / 3), 0, 0, 0
+      return running_loss / (outputs.shape[0] / 3)
 
    def __str__(self):
         return "Triplet, margin = {}".format(self.margin)

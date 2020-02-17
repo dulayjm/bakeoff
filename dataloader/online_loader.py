@@ -3,7 +3,7 @@ import numpy as np
 import logging
 from os import system
 
-from dataloaders.loader import Loader
+from .loader import Loader
 
 class OnlineLoader(Loader):
   def __init__(self, data_table, dataset, batch_size):
@@ -21,22 +21,24 @@ class OnlineLoader(Loader):
 
     index = 0
     while (index < len(self.data_table)):
-      # log progress
-      system('clear')
-      print("Loading dataloader...")
-      perc = index*50//len(self.data_table)
-      print(">"*perc + "-"*(50-perc))
-      
       batch = [[],[]]
       class_idx = 0
-      for i in range(min(batch_size, len(self.data_table) - index)):
+      for i in range(batch_size):
         num_class_samples = min(batch_size // self.num_classes, batch_size - len(batch[0]))
         for g in range(num_class_samples):
           if (len(map_label_indices[classes[class_idx]]) == 0):
             map_label_indices[classes[class_idx]] = np.flatnonzero(self.data_table['category_id'] == classes[class_idx]).tolist()
+          
           batch[0].append(self.dataset[map_label_indices[classes[class_idx]].pop(0)][0])
           batch[1].append(classes[class_idx])
           index += 1
+
+          # log progress
+          system('clear')
+          print("Loading dataloader...")
+          perc = index*50//len(self.data_table)
+          print(">"*perc + "-"*(50-perc))
+
         class_idx = class_idx+1 if class_idx < len(classes)-1 else 0
       batches.append(batch)
     return batches

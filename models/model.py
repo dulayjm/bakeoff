@@ -1,5 +1,6 @@
 from torch.optim import lr_scheduler
 import time
+import logging
 
 from models.train import train_model
 
@@ -22,12 +23,10 @@ class Model():
     self.optimizer = self.get_optimizer(lr)
     self.scheduler = lr_scheduler.StepLR(self.optimizer, step_size=step_size, gamma=0.1)
 
-    self.trained = False
-
   def train(self):
     start_time = time.time()
     train_model(self.loaders, self.model, self.loss_fn, self.acc_fn, self.optimizer, self.scheduler, self.epochs, name=self.name)
-    print('Training time: {:10f} minutes'.format((time.time()-start_time)/60))
+    logging.info('Training time: {:10f} minutes'.format((time.time()-start_time)/60))
 
   def get_optimizer(self, lr):
     return optim.SGD(self.model.parameters(), lr=lr, momentum=0.9)

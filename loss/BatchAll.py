@@ -3,6 +3,8 @@ from torch import nn
 from torch.autograd import Variable
 import numpy as np
 
+import logging
+
 
 def euclidean_dist(inputs_):
     # Compute pairwise distance, replace by the official when merged
@@ -28,6 +30,8 @@ class BatchAllLoss(nn.Module):
         eyes_ = Variable(torch.eye(n, n))
         pos_mask = targets.expand(n, n).eq(targets.expand(n, n).t())
         neg_mask = eyes_.eq(eyes_) ^ pos_mask
+
+
         pos_mask = pos_mask ^ eyes_.eq(1)
         pos_dist = torch.masked_select(dist_mat, pos_mask)
         neg_dist = torch.masked_select(dist_mat, neg_mask)
@@ -38,7 +42,6 @@ class BatchAllLoss(nn.Module):
         neg_dist = neg_dist.reshape(len(neg_dist)//(num_neg_instances), num_neg_instances)
 
         loss = list()
-        prec = list()
         for i, pos_pair in enumerate(pos_dist):
             neg_dist_ = neg_dist[i].repeat(num_instances - 1, 1)
             pos_dist_ = pos_pair.repeat(num_neg_instances, 1)
@@ -51,12 +54,31 @@ class BatchAllLoss(nn.Module):
             y.fill_(1)
             y = Variable(y)
             loss.append(self.ranking_loss(neg_dist_, pos_dist_, y))
-            prec.append((neg_dist_.data > pos_dist_.data).sum() * 1. / y.size(0))
         loss = torch.mean(torch.stack([loss_ for loss_ in loss]))
-        prec = np.mean(prec)
-        neg_dist_mean = torch.mean(neg_dist).item()
-        pos_dist_mean = torch.mean(pos_dist).item()
-        return loss, prec, pos_dist_mean, neg_dist_mean
+        return loss
     
     def __str__(self):
         return "Batch All, margin = {}".format(self.margin)
+
+def main():
+    data_size = 150
+    input_dim = 28
+    output_dim = 256
+    num_class = 15
+    # margin = 0.5
+    x = Variable(torch.rand(data_size, input_dim, input_dim), requires_grad=False)
+    w = Variable(torch.rand(input_dim, output_dim), requires_grad=True)
+    print('training data is ', x.shape)
+    print('initial parameters are ', w.shape)
+    for i, img in enumerate(x):
+        x[i] = x[i].mm(w)
+    print('extracted feature is :', inputs.shape)
+
+    # y_ = np.random.randint(num_class, size=data_size)
+    y_ = 8*list(range(num_class))
+    targets = Variable(torch.IntTensor(y_))
+    print(BatchAllLoss(margin=0.2)(inputs, targets))
+
+
+if __name__ == '__main__':
+    main()

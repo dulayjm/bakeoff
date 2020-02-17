@@ -59,7 +59,7 @@ class BatchHardLoss(nn.Module):
 
     triplet_losses = torch.clamp(hard_pos - hard_neg + self.margin, min=0)
     
-    return torch.sum(triplet_losses)/triplet_losses.size(0), 0, torch.mean(pos_dist_mat).item(), torch.mean(neg_dist_mat).item()
+    return torch.sum(triplet_losses)/triplet_losses.size(0)
 
   def __str__(self):
     return "Batch Hard, margin = {}".format(self.margin)

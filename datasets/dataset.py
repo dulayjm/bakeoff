@@ -19,3 +19,9 @@ class TargetDataset(Dataset):
         if self.transform:
             image = self.transform(image)
         return image, int(labels)
+
+    def makeTable(self, table):
+        for file in listdir(path):
+            train.append(['{}/{}'.format(label, file), label, class_index])
+
+        df = pd.DataFrame(train, columns=['file', 'category', 'category_id',])

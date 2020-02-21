@@ -40,8 +40,8 @@ args = parser.parse_args()
 
 data = datasets.create(args.dataset)
 
-train_loader = dataloader.create(args.loss_fn, data.train_data, data.train_set, int(args.batch_size))
-valid_loader = dataloader.create(args.loss_fn, data.valid_data, data.valid_set, int(args.batch_size))
+train_loader = dataloader.create(args.loss_fn, data.train, int(args.batch_size))
+valid_loader = dataloader.create(args.loss_fn, data.valid, int(args.batch_size))
 
 model_param = {
   "dataset": args.dataset,

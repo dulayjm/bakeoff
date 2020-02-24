@@ -25,8 +25,12 @@ class Model():
     self.optimizer = self.get_optimizer(lr)
     self.scheduler = lr_scheduler.StepLR(self.optimizer, step_size=step_size, gamma=0.1)
 
-    # for m in self.model.modules():
-    #   self.init_params(m)
+    # randomize layers once number of requested pretrained layers reached
+    layer_idx = 0
+    for m in self.model.modules():
+      if (layer_idx >= pretrained):
+        self.init_params(m)
+      layer_idx += 1  
 
   def train(self):
     start_time = time.time()

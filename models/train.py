@@ -49,6 +49,8 @@ def train_model(dataloaders, model, criterion, acc_fn, optimizer, scheduler, num
 
                 images, labels = data
                 outputs = model(torch.stack(images).to(device))
+                if model.__class__.__name__ is "GoogLeNet":
+                    outputs = outputs.logits
                 labels = torch.IntTensor(labels)
 
                 loss = criterion(outputs, labels)

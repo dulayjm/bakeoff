@@ -20,7 +20,7 @@ parser.add_argument('-acc_fn', default='knn', required=False,
                     help='accuracy evaluation function')
 parser.add_argument('-epochs', default=50, required=False,
                     help='number of epochs')
-parser.add_argument('-pretrain', default=False, required=False,
+parser.add_argument('-pretrain', default=0, required=False,
                     help='pretrain on ImageNet?')
 parser.add_argument('-step_size', default=7, required=False,
                     help='number of epochs between decreasing learning rate')
@@ -50,7 +50,7 @@ model_param = {
   "loss_fn": loss.create(args.loss_fn),
   "acc_fn": accuracy.create(args.acc_fn),
   "epochs": int(args.epochs),
-  "pretraining": bool(args.pretrain),
+  "pretrained": int(args.pretrain),
   "step_size": int(args.step_size),
   "feature_extracting": bool(args.feature_extracting),
   "learning_rate": float(args.lr),
@@ -63,7 +63,7 @@ model = models.create(args.model,
                 model_param["loss_fn"], 
                 model_param["acc_fn"], 
                 model_param["epochs"], 
-                model_param["pretraining"], 
+                model_param["pretrained"], 
                 model_param["step_size"], 
                 model_param["feature_extracting"], 
                 model_param["learning_rate"], 

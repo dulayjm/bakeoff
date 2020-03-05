@@ -3,9 +3,10 @@ import logging
 import torch
 from os import system
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
-def train_model(dataloaders, model, criterion, acc_fn, optimizer, scheduler, num_epochs=10, name="model"):
+def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, scheduler, num_epochs=10, name="model"):
     since = time.time()
 
     # send to the gpu if available
@@ -49,9 +50,9 @@ def train_model(dataloaders, model, criterion, acc_fn, optimizer, scheduler, num
 
                 images, labels = data
                 outputs = model(torch.stack(images).to(device))
-                if model.__class__.__name__ is "GoogLeNet":
-                    outputs = outputs.logits
                 labels = torch.IntTensor(labels)
+
+                print(hook.features.shape)
 
                 loss = criterion(outputs, labels)
                 logging.debug("{} batch {} loss: {}".format(phase, num_batches, loss))

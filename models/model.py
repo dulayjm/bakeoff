@@ -34,7 +34,7 @@ class Model():
 
   def train(self):
     start_time = time.time()
-    train_model(self.loaders, self.model, self.loss_fn, self.acc_fn, self.optimizer, self.scheduler, self.epochs, name=self.name)
+    train_model(self.loaders, self.model, self.loss_fn, self.activated_features, self.acc_fn, self.optimizer, self.scheduler, self.epochs, name=self.name)
     logging.info('Training time: {:10f} minutes'.format((time.time()-start_time)/60))
 
   def get_optimizer(self, lr):
@@ -42,4 +42,4 @@ class Model():
   
   def init_params(self, m):
     if type(m)==torch.nn.Linear or type(m)==torch.nn.Conv2d:
-      m.weight.data=torch.randn(m.weight.size())*.01#Random weight initialisation
+      m.weight.data=torch.randn(m.weight.size())*.01 #Random weight initialisation

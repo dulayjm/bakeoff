@@ -8,7 +8,7 @@ class Alexnet(Model):
         alexnet = models.alexnet(pretrained=True)
 
         super().__init__(loaders, alexnet, loss_fn, acc_fn, epochs, pretrained, step_size, feature_extracting, lr, output_layers, name=name)
-        self.activated_features = SaveFeatures(self.model.classifier[6])
+        self.activated_features = SaveFeatures(dict(list(self.model.modules())[0].features.named_children())['10'])
 
     def get_optimizer(self, lr):
         num_ftrs = self.model.classifier[6].in_features

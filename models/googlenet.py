@@ -8,7 +8,7 @@ class Googlenet(Model):
         googlenet = models.googlenet(pretrained=True)
 
         super().__init__(loaders, googlenet, loss_fn, acc_fn, epochs, pretrained, step_size, feature_extracting, lr, output_layers, name=name)
-        # self.activated_features = SaveFeatures(self.model._modules.get('b5'))
+        self.activated_features = SaveFeatures(list(self.model.modules())[-4])
 
     def get_optimizer(self, lr):
         num_ftrs = self.model.fc.in_features

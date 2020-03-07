@@ -21,7 +21,7 @@ class OnlineLoader(Loader):
 
     index = 0
     while (index < len(self.data.table)):
-      batch = [[],[]]
+      batch = [[],[], []]
       class_idx = 0
       for i in range(batch_size):
         num_class_samples = min(batch_size // self.num_classes, batch_size - len(batch[0]))
@@ -29,8 +29,10 @@ class OnlineLoader(Loader):
           if (len(map_label_indices[classes[class_idx]]) == 0):
             map_label_indices[classes[class_idx]] = np.flatnonzero(self.data.table['category_id'] == classes[class_idx]).tolist()
           
-          batch[0].append(self.data.set[map_label_indices[classes[class_idx]].pop(0)][0])
-          batch[1].append(classes[class_idx])
+          img, label, fileName = self.data.set[map_label_indices[classes[class_idx]].pop(0)]
+          batch[0].append(img)
+          batch[1].append(label)
+          batch[2].append(fileName)
           index += 1
 
           # log progress

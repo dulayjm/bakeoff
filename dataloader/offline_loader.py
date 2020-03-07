@@ -25,4 +25,7 @@ class OfflineLoader(Loader):
     neg_idx = np.random.choice(self.map_label_indices[neg_class_id], 1, replace=False)[0]
 
     # return [images], [labels]
-    return [self.data.set[index][0], self.data.set[pos_idx][0], self.data.set[neg_idx][0]], [self.data.set[index][1], self.data.set[pos_idx][1], self.data.set[neg_idx][1]]
+    anchor_img, anchor_label, anchor_file = self.data.set[index]
+    pos_img, pos_label, pos_file = self.data.set[pos_idx]
+    neg_img, neg_label, neg_file = self.data.set[neg_idx]
+    return [anchor_img, pos_img, neg_img], [anchor_label, pos_label, neg_label], [anchor_file, pos_file, neg_file]

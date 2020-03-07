@@ -73,6 +73,7 @@ model = models.create(args.model,
 
 if not os.path.exists("results/{}/".format(model_param["name"])):
     os.makedirs("results/{}/".format(model_param["name"]))
+    os.makedirs("results/{}/maps".format(model_param["name"]))
 
 # setup logging and turn off PIL plugin logging
 logging.basicConfig(filename="results/{}/training.log".format(model_param["name"]), level=logging.INFO, format='%(asctime)s:%(name)s:%(levelname)s::  %(message)s')

@@ -17,11 +17,13 @@ class Loader():
     while batch_id < num_batches:
       batch = []
       batch_labels = []
+      batch_files = []
       # batch size is lesser between preset batch size and images remaining in data.set
       for i in range(batch_size):
-        images, labels = self.getSet(index % len(self.data.table))
+        images, labels, fileNames = self.getSet(index % len(self.data.table))
         batch.extend(images)
         batch_labels.extend(labels)
+        batch_files.extend(fileNames)
 
         index += 1
 
@@ -32,11 +34,12 @@ class Loader():
         print(">"*perc + "-"*(50-perc))
 
       batch_id += 1
-      batches.append([batch, batch_labels])
+      batches.append([batch, batch_labels, batch_files])
     return batches
 
   def getSet(self, index):
-    return [self.data.set[index][0]], [self.data.set[index][1]]
+    img, label, fileName = self.data.set[index]
+    return [img], [label], [fileName]
 
   def __str__(self):
     return "{} with batch size {}".format(self.name, self.batch_size)

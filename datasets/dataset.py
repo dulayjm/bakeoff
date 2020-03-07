@@ -18,7 +18,7 @@ class TargetDataset(Dataset):
         labels = self.labels.iloc[idx, 2]
         if self.transform:
             image = self.transform(image)
-        return image, int(labels)
+        return image, int(labels), fullname
 
     def makeTable(self, table):
         for file in listdir(path):

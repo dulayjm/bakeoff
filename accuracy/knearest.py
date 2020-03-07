@@ -1,14 +1,16 @@
 import torch
+from visualizer import visualize
 
 class KNN():
-  def get_acc(self, outputs, labels):
+  def get_acc(self, outputs, hook, fileNames, labels, size):
     j = 0
     corrects = 0
     for anchor in outputs:
       test_data, test_labels = self.removeAtIndex([outputs.tolist(), labels.tolist()], j)
       test_data = [torch.FloatTensor(embedding) for embedding in test_data]
       anchor_label = labels[j]
-      correct = self.correct(anchor, anchor_label, torch.stack(test_data), test_labels)
+      correct, top_idx = self.correct(anchor, anchor_label, torch.stack(test_data), test_labels)
+      visualize(hook.features[j], fileNames[j], hook.features[top_idx], fileNames[top_idx], size)
       corrects += correct
       j += 1
     return corrects / j
@@ -23,11 +25,12 @@ class KNN():
     knn = dist.topk(1, largest=False)
 
     # return if actual test image label is contained in the closest image labels
-    knn_labels = [labels[index] for index in knn.indices.tolist()]
+    knn_indices = knn.indices.tolist()
+    knn_labels = [labels[index] for index in knn_indices]
     if (anchor_label in knn_labels):
-      return 1
+      return 1, knn_indices[0]
     else:
-      return 0
+      return 0, knn_indices[0]
 
   def removeAtIndex(self, lists, j):
     removed = []

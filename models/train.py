@@ -1,9 +1,6 @@
 import time
 import logging
 import torch
-from PIL import Image
-from torchvision import transforms
-import skimage.transform
 from os import system
 import pandas as pd
 import numpy as np
@@ -52,21 +49,9 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                 optimizer.zero_grad()
 
                 images, labels, fileNames = data
-                image = Image.open(fileNames[0]).convert('RGB')
+            
                 outputs = model(torch.stack(images).to(device))
                 labels = torch.IntTensor(labels)
-
-                overlay = getCAM(hook.features[0])
-
-                display_transform = transforms.Compose([
-                    transforms.Resize((256,256))
-                ])
-
-                plt.imshow(overlay[0], alpha=0.5, cmap='jet')
-                plt.imshow(display_transform(image))
-                plt.imshow(skimage.transform.resize(overlay[0], images[0].shape[1:3]), alpha=0.5, cmap='jet')
-                plt.axis('off')
-                plt.savefig('results/{}/maps/{}-{}.png'.format(name, epoch+1, num_batches), bbox_inches='tight', pad_inches = 0)
 
                 loss = criterion(outputs, labels)
                 logging.debug("{} batch {} loss: {}".format(phase, num_batches, loss))
@@ -80,7 +65,7 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                     # track epoch total loss
                     running_loss += loss.data.item()
 
-                    acc = acc_fn.get_acc(outputs, labels)
+                    acc = acc_fn.get_acc(outputs, hook, fileNames, labels, (256,256))
                     logging.debug("{} batch {} top 1 acc: {}".format(phase, num_batches, acc))
                     running_acc += acc
 
@@ -127,14 +112,4 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
         time_elapsed / 60, time_elapsed % 60))
     logging.info('Best val Acc: {:4f}'.format(best_acc))
     print('Training complete! Check the log file {}.log and csv file {}.csv for results'.format(name,name))
-
     return model
-
-def getCAM(feature_conv):
-    nc, h, w = feature_conv.shape
-    cam = sum(feature_conv.reshape((nc, h*w)))
-    print(cam.shape)
-    cam = cam.reshape(h, w)
-    cam = cam - np.min(cam)
-    cam_img = cam / np.max(cam)
-    return [cam_img]

@@ -1,6 +1,8 @@
 import time
 import logging
 import torch
+from torchvision import transforms
+import skimage.transform
 from os import system
 import pandas as pd
 import numpy as np
@@ -49,10 +51,26 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                 optimizer.zero_grad()
 
                 images, labels = data
+                print(len(images))
                 outputs = model(torch.stack(images).to(device))
                 labels = torch.IntTensor(labels)
 
                 print(hook.features.shape)
+                weights_params = list(model._modules.get('fc').parameters())
+                weights = np.squeeze(weights_params[0].cpu().data.numpy())
+                print(weights.shape)
+                class_idx = 0
+                overlay = getCAM(hook.features[0], weights, class_idx)
+
+                display_transform = transforms.Compose([
+                    transforms.Resize((256,256))
+                ])
+
+                plt.imshow(overlay[0], alpha=0.5, cmap='jet')
+                # plt.imshow(display_transform(images[0]))
+                # plt.imshow(skimage.transform.resize(overlay[0], tensor.shape[1:3]), alpha=0.5, cmap='jet')
+                plt.axis('off')
+                plt.show()
 
                 loss = criterion(outputs, labels)
                 logging.debug("{} batch {} loss: {}".format(phase, num_batches, loss))
@@ -115,3 +133,11 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
     print('Training complete! Check the log file {}.log and csv file {}.csv for results'.format(name,name))
 
     return model
+
+def getCAM(feature_conv, weight_fc, class_idx):
+    nc, h, w = feature_conv.shape
+    cam = weight_fc[class_idx].dot(feature_conv.reshape((nc, h*w)))
+    cam = cam.reshape(h, w)
+    cam = cam - np.min(cam)
+    cam_img = cam / np.max(cam)
+    return [cam_img]

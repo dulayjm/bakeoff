@@ -1,19 +1,20 @@
 import torch
-from visualizer import visualize
 
 class KNN():
-  def get_acc(self, outputs, hook, fileNames, labels, size):
+  def get_acc(self, outputs, labels):
     j = 0
     corrects = 0
+    pairs = []
     for anchor in outputs:
       test_data, test_labels = self.removeAtIndex([outputs.tolist(), labels.tolist()], j)
       test_data = [torch.FloatTensor(embedding) for embedding in test_data]
       anchor_label = labels[j]
       correct, top_idx = self.correct(anchor, anchor_label, torch.stack(test_data), test_labels)
-      visualize(hook.features[j], fileNames[j], hook.features[top_idx], fileNames[top_idx], size)
+      # appends the anchor index and most similar image index to be used for visualizations
+      pairs.append([j, top_idx, correct])
       corrects += correct
       j += 1
-    return corrects / j
+    return corrects / j, pairs
 
   def correct(self, anchor, anchor_label, weights, labels):
     # error checking

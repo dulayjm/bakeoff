@@ -21,7 +21,7 @@ parser.add_argument('-acc_fn', default='knn', required=False,
 parser.add_argument('-epochs', default=50, required=False,
                     help='number of epochs')
 parser.add_argument('-pretrain', default=0, required=False,
-                    help='pretrain on ImageNet?')
+                    help='number of pretrained layers')
 parser.add_argument('-step_size', default=7, required=False,
                     help='number of epochs between decreasing learning rate')
 parser.add_argument('-feature_extracting', default=False, required=False,

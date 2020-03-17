@@ -77,7 +77,7 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                         # convert int correct value to word
                         correct = 'correct' if correct else 'incorrect'
                         # construct visualization file name based on pair id and labels
-                        folder = 'results/{}/maps/epoch{}/batch{}/'.format(name,epoch+1,num_batches)
+                        folder = 'results/{}/maps/epoch{}/{}/batch{}/'.format(name,epoch+1,phase,num_batches)
                         if not os.path.exists(folder):
                             os.makedirs(folder)
                         out_file = folder + '{}-{}_and_{}-{}.png'.format(correct,labels[idx1],labels[idx2],pair_id)

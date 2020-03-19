@@ -45,7 +45,7 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
             num_batches = 0
             for data in batched_data[phase]:
                 num_batches += 1
-                print("{} batch {} of {}".format(phase, num_batches, len(batched_data[phase])))
+                print("epoch {}/{}: {} batch {} of {}".format(epoch+1, num_epochs, phase, num_batches, len(batched_data[phase])))
 
                 # zero the parameter gradients
                 optimizer.zero_grad()

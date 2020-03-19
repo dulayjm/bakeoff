@@ -1,7 +1,9 @@
 from torch.optim import lr_scheduler
 import torch
+import torchvision
 import time
 import logging
+import sys
 
 from models.train import train_model
 from models.save_features import SaveFeatures
@@ -25,12 +27,21 @@ class Model():
     self.optimizer = self.get_optimizer(lr)
     self.scheduler = lr_scheduler.StepLR(self.optimizer, step_size=step_size, gamma=0.1)
 
+    self.randomizeLastLayers(self.model, pretrained)
+
+  # block can be entire model of block of layers within model
+  def randomizeLastLayers(self, block, num_pretrain, layer_idx=0):
     # randomize layers once number of requested pretrained layers reached
-    layer_idx = 0
-    for m in self.model.modules():
-      if (layer_idx >= pretrained):
-        self.init_params(m)
-      layer_idx += 1  
+    for layer in block.children():
+      # if the layer contains layers within itself, iterate over those layers with recursion
+      if (type(layer)==torch.nn.Sequential or type(layer)==torchvision.models.resnet.BasicBlock):
+        layer_idx = self.randomizeLastLayers(layer, num_pretrain, layer_idx)
+      else:
+        if (layer_idx >= num_pretrain):
+          # returns 1 if was a randomized layer, 0 if the layer was not randomized
+          layer_idx += self.init_params(layer)
+    # return layer index so recursive calls can keep track
+    return layer_idx
 
   def train(self):
     start_time = time.time()
@@ -40,6 +51,10 @@ class Model():
   def get_optimizer(self, lr):
     return optim.SGD(self.model.parameters(), lr=lr, momentum=0.9)
   
+  # returns 1 if layer was randomized, 0 if was not
   def init_params(self, m):
     if type(m)==torch.nn.Linear or type(m)==torch.nn.Conv2d:
       m.weight.data=torch.randn(m.weight.size())*.01 #Random weight initialisation
+      return 1
+    else:
+      return 0

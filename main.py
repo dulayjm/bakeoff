@@ -57,7 +57,8 @@ model_param = {
   "feature_extracting": bool(args.feature_extracting),
   "learning_rate": float(args.lr),
   "output_layers": int(args.output_layers),
-  "name": args.name
+  "name": args.name,
+  "visualization class": args.visualize
 }
 
 model = models.create(args.model,
@@ -71,7 +72,7 @@ model = models.create(args.model,
                 model_param["learning_rate"], 
                 model_param["output_layers"], 
                 model_param["name"],
-                args.visualize
+                model_param["visualization class"]
               )
 
 if not os.path.exists("results/{}/".format(model_param["name"])):

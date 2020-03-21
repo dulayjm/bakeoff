@@ -38,9 +38,15 @@ class Model():
       if (type(layer)==torch.nn.Sequential or type(layer)==torchvision.models.resnet.BasicBlock):
         layer_idx = self.randomizeLastLayers(layer, num_pretrain, layer_idx)
       else:
-        if (layer_idx >= num_pretrain):
-          # returns 1 if was a randomized layer, 0 if the layer was not randomized
-          layer_idx += self.init_params(layer)
+        # only consider linear and convolutional layers for randomization
+        if type(layer)==torch.nn.Linear or type(layer)==torch.nn.Conv2d:
+          if (layer_idx >= num_pretrain):
+            logging.debug(layer, ' of index ', layer_idx, ' randomized')
+            layer.weight.data=torch.randn(layer.weight.size())*.01 #Random weight initialisation
+            layer_idx += 1
+          else:
+            logging.debug(layer, ' of index ', layer_idx, ' is pretrained')
+            layer_idx += 1
     # return layer index so recursive calls can keep track
     return layer_idx
 

@@ -70,7 +70,7 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                     acc, img_pairs = acc_fn.get_acc(outputs, labels)
                     # iterate through each image and its most similar image in batch
                     for pair_id, [idx1, idx2, correct] in enumerate(img_pairs):
-                        if (labels[idx1] == classOfInterest or classOfInterest is 'all'):
+                        if (str(labels[idx1].item()) == classOfInterest or classOfInterest is 'all'):
                             # extract features from last convolutional layer
                             features = [hook.features[idx1], hook.features[idx2]]
                             # save fileNames for opening image
@@ -81,7 +81,7 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                             folder = 'results/{}/maps/epoch{}/{}/'.format(name,epoch+1,phase,num_batches)
                             if not os.path.exists(folder):
                                 os.makedirs(folder)
-                            out_file = folder + '{}-{}_and_{}-{}.png'.format(correct,labels[idx1],labels[idx2],pair_id)
+                            out_file = folder + '{}-{}_and_{}-batch{}.{}.png'.format(correct,labels[idx1],labels[idx2],num_batches,pair_id)
                             # create activation map with original image shape
                             visualize(features, files, out_file, images[0].shape[1:3])
 

@@ -9,7 +9,7 @@ from models.train import train_model
 from models.save_features import SaveFeatures
 
 class Model():
-  def __init__(self, dataloaders, model, loss_fn, acc_fn, epochs=20, pretrained=0, step_size=7, feature_extracting=False, lr=0.01, output_layers=256, name="model"):
+  def __init__(self, dataloaders, model, loss_fn, acc_fn, epochs=20, pretrained=0, step_size=7, feature_extracting=False, lr=0.01, output_layers=256, name="model", visualize="none"):
     self.epochs = epochs
 
     self.loss_fn = loss_fn
@@ -17,6 +17,7 @@ class Model():
     self.loaders = dataloaders
     self.model = model
     self.name = name
+    self.classOfInterest = visualize
 
     self.output_layers = output_layers
 
@@ -45,7 +46,18 @@ class Model():
 
   def train(self):
     start_time = time.time()
-    train_model(self.loaders, self.model, self.loss_fn, self.activated_features, self.acc_fn, self.optimizer, self.scheduler, self.epochs, name=self.name)
+    train_model(
+      self.loaders,
+      self.model,
+      self.loss_fn,
+      self.activated_features,
+      self.acc_fn,
+      self.optimizer,
+      self.scheduler,
+      self.epochs,
+      name=self.name,
+      classOfInterest=self.classOfInterest
+    )
     logging.info('Training time: {:10f} minutes'.format((time.time()-start_time)/60))
 
   def get_optimizer(self, lr):

@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from visualizer import visualize
 
-def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, scheduler, num_epochs=10, name="model"):
+def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, scheduler, num_epochs=10, name="model", classOfInterest="none"):
     since = time.time()
 
     # send to the gpu if available
@@ -70,19 +70,20 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                     acc, img_pairs = acc_fn.get_acc(outputs, labels)
                     # iterate through each image and its most similar image in batch
                     for pair_id, [idx1, idx2, correct] in enumerate(img_pairs):
-                        # extract features from last convolutional layer
-                        features = [hook.features[idx1], hook.features[idx2]]
-                        # save fileNames for opening image
-                        files = [fileNames[idx1], fileNames[idx2]]
-                        # convert int correct value to word
-                        correct = 'correct' if correct else 'incorrect'
-                        # construct visualization file name based on pair id and labels
-                        folder = 'results/{}/maps/epoch{}/{}/batch{}/'.format(name,epoch+1,phase,num_batches)
-                        if not os.path.exists(folder):
-                            os.makedirs(folder)
-                        out_file = folder + '{}-{}_and_{}-{}.png'.format(correct,labels[idx1],labels[idx2],pair_id)
-                        # create activation map with original image shape
-                        visualize(features, files, out_file, images[0].shape[1:3])
+                        if (labels[idx1] == classOfInterest or classOfInterest is 'all'):
+                            # extract features from last convolutional layer
+                            features = [hook.features[idx1], hook.features[idx2]]
+                            # save fileNames for opening image
+                            files = [fileNames[idx1], fileNames[idx2]]
+                            # convert int correct value to word
+                            correct = 'correct' if correct else 'incorrect'
+                            # construct visualization file name based on pair id and labels
+                            folder = 'results/{}/maps/epoch{}/{}/'.format(name,epoch+1,phase,num_batches)
+                            if not os.path.exists(folder):
+                                os.makedirs(folder)
+                            out_file = folder + '{}-{}_and_{}-{}.png'.format(correct,labels[idx1],labels[idx2],pair_id)
+                            # create activation map with original image shape
+                            visualize(features, files, out_file, images[0].shape[1:3])
 
                     logging.debug("{} batch {} top 1 acc: {}".format(phase, num_batches, acc))
                     running_acc += acc

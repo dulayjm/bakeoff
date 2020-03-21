@@ -36,6 +36,8 @@ parser.add_argument('-dataset', default='MNIST', required=True,
                     help='samples per training batch')
 parser.add_argument('-batch_size', default=45, required=True,
                     help='samples per training batch')
+parser.add_argument('-visualize', default='none', required=False,
+                    help='class to visualize')
 args = parser.parse_args()
 
 data = datasets.create(args.dataset)
@@ -68,7 +70,8 @@ model = models.create(args.model,
                 model_param["feature_extracting"], 
                 model_param["learning_rate"], 
                 model_param["output_layers"], 
-                model_param["name"]
+                model_param["name"],
+                args.visualize
               )
 
 if not os.path.exists("results/{}/".format(model_param["name"])):

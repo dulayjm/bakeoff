@@ -81,7 +81,7 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                             folder = 'results/{}/maps/epoch{}/{}/'.format(name,epoch+1,phase,num_batches)
                             if not os.path.exists(folder):
                                 os.makedirs(folder)
-                            out_file = folder + '{}-{}_and_{}-batch{}.{}.png'.format(correct,labels[idx1],labels[idx2],num_batches,pair_id)
+                            out_file = folder + '{}--{}_and_{}--batch{}-{}.png'.format(correct,labels[idx1],labels[idx2],num_batches,pair_id)
                             # create activation map with original image shape
                             visualize(features, files, out_file, images[0].shape[1:3])
 

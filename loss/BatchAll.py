@@ -60,26 +60,3 @@ class BatchAllLoss(nn.Module):
     
     def __str__(self):
         return "Batch All, margin = {}".format(self.margin)
-
-def main():
-    data_size = 150
-    input_dim = 28
-    output_dim = 256
-    num_class = 15
-    # margin = 0.5
-    x = Variable(torch.rand(data_size, input_dim, input_dim), requires_grad=False)
-    w = Variable(torch.rand(input_dim, output_dim), requires_grad=True)
-    print('training data is ', x.shape)
-    print('initial parameters are ', w.shape)
-    for i, img in enumerate(x):
-        x[i] = x[i].mm(w)
-    print('extracted feature is :', inputs.shape)
-
-    # y_ = np.random.randint(num_class, size=data_size)
-    y_ = 8*list(range(num_class))
-    targets = Variable(torch.IntTensor(y_))
-    print(BatchAllLoss(margin=0.2)(inputs, targets))
-
-
-if __name__ == '__main__':
-    main()

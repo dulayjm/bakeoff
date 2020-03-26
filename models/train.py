@@ -52,7 +52,7 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
 
                 images, labels, fileNames = data
             
-                outputs = model(torch.stack(images).to(device))
+                outputs = model(torch.stack(images).to(device)).to(device)
                 labels = torch.IntTensor(labels)
 
                 loss = criterion(outputs, labels)

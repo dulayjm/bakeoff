@@ -53,7 +53,7 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                 images, labels, fileNames = data
             
                 outputs = model(torch.stack(images).to(device)).to(device)
-                labels = torch.IntTensor(labels)
+                labels = torch.IntTensor(labels).to(device)
 
                 loss = criterion(outputs, labels)
                 logging.debug("{} batch {} loss: {}".format(phase, num_batches, loss))

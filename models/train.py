@@ -52,8 +52,8 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
 
                 images, labels, fileNames = data
             
-                outputs = model(torch.stack(images).to(device))
-                labels = torch.IntTensor(labels)
+                outputs = model(torch.stack(images).to(device)).to(device)
+                labels = torch.IntTensor(labels).to(device)
 
                 loss = criterion(outputs, labels)
                 logging.debug("{} batch {} loss: {}".format(phase, num_batches, loss))
@@ -63,10 +63,9 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                     if phase == 'train':
                         loss.backward()
                         optimizer.step()
-
                     # track epoch total loss
                     running_loss += loss.data.item()
-
+                    
                     acc, img_pairs = acc_fn.get_acc(outputs, labels)
                     # iterate through each image and its most similar image in batch
                     for pair_id, [idx1, idx2, correct] in enumerate(img_pairs):

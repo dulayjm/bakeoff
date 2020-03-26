@@ -2,6 +2,7 @@ import torch
 from torch import nn
 from torch.autograd import Variable
 import numpy as np
+from device import device
 
 import logging
 
@@ -27,7 +28,7 @@ class BatchAllLoss(nn.Module):
         # Compute pairwise distance, replace by the official when merged
         dist_mat = euclidean_dist(inputs)
         # split the positive and negative pairs
-        eyes_ = Variable(torch.eye(n, n))
+        eyes_ = Variable(torch.eye(n, n)).to(device)
         pos_mask = targets.expand(n, n).eq(targets.expand(n, n).t())
         neg_mask = eyes_.eq(eyes_) ^ pos_mask
 

@@ -21,14 +21,13 @@ class BatchAllLoss(nn.Module):
         super(BatchAllLoss, self).__init__()
         self.margin = margin
         self.ranking_loss = nn.MarginRankingLoss(margin=self.margin)
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     def forward(self, inputs, targets):
         n = inputs.size(0)
         # Compute pairwise distance, replace by the official when merged
         dist_mat = euclidean_dist(inputs)
         # split the positive and negative pairs
-        eyes_ = Variable(torch.eye(n, n)).to(self.device)
+        eyes_ = Variable(torch.eye(n, n))
         pos_mask = targets.expand(n, n).eq(targets.expand(n, n).t())
         neg_mask = eyes_.eq(eyes_) ^ pos_mask
 

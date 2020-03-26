@@ -2,14 +2,12 @@ from .CARS import CARS
 from .CUB import CUB
 from .MNIST import MNIST
 from .TEST import TEST
-from .CIFAR import CIFAR
 
 __factory = {
     'CARS': CARS,
     'CUB': CUB,
     'MNIST': MNIST,
-    'TEST': TEST,
-    'CIFAR': CIFAR
+    'TEST': TEST
 }
 
 

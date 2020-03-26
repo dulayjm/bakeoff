@@ -9,7 +9,10 @@ class KNN():
     for anchor in outputs:
       anchor_label = labels[j]
       # correct requires a list of tensors
-      outputs = [torch.FloatTensor(output) for output in outputs]
+      if torch.cuda.is_available():
+          outputs = [torch.cuda.FloatTensor(output) for output in outputs]
+      else:
+          outputs = [torch.FloatTensor(output) for output in outputs]
       correct, top_idx = self.correct(anchor, anchor_label, torch.stack(outputs), labels)
       # appends the anchor index and most similar image index to be used for visualizations
       pairs.append([j, top_idx, correct])

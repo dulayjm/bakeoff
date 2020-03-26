@@ -7,12 +7,12 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from visualizer import visualize
+from device import device
 
 def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, scheduler, num_epochs=10, name="model", classOfInterest="none"):
     since = time.time()
 
     # send to the gpu if available
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
     best_acc = 0.0

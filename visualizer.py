@@ -15,14 +15,14 @@ def visualize(feature_pair, file_pair, out_file, img_shape):
     overlay = getCAM(feature_pair[0])
     axarr[0].imshow(overlay, alpha=0.5, cmap='jet')
     axarr[0].imshow(display_transform(image))
-    axarr[0].imshow(skimage.transform.resize(overlay, img_shape), alpha=0.3, cmap='jet')
+    axarr[0].imshow(skimage.transform.resize(overlay, img_shape), alpha=0.5, cmap='jet')
     axarr[0].axis('off')
 
     image = Image.open(file_pair[1]).convert('RGB')
     overlay = getCAM(feature_pair[1])
     axarr[1].imshow(overlay, alpha=0.5, cmap='jet')
     axarr[1].imshow(display_transform(image))
-    axarr[1].imshow(skimage.transform.resize(overlay, img_shape), alpha=0.3, cmap='jet')
+    axarr[1].imshow(skimage.transform.resize(overlay, img_shape), alpha=0.5, cmap='jet')
     axarr[1].axis('off')
 
     plt.subplots_adjust(wspace=0, hspace=0)

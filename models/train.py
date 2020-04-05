@@ -70,8 +70,7 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                     acc, img_pairs = acc_fn.get_acc(outputs, labels)
                     # iterate through each image and its most similar image in batch
                     for pair_id, [idx1, idx2, correct] in enumerate(img_pairs):
-                        int_name = int(fileNames[idx1].split('/')[-1][:-4])
-                        if (str(labels[idx1].item()) == classOfInterest or classOfInterest is 'all') or (int_name <= 30):
+                        if (str(labels[idx1].item()) == classOfInterest or classOfInterest is 'all'):
                             # extract features from last convolutional layer
                             features = [hook.features[idx1], hook.features[idx2]]
                             # save fileNames for opening image

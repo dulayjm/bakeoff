@@ -8,7 +8,7 @@ from .loader import Loader
 class OnlineLoader(Loader):
   def __init__(self, data, batch_size):
     self.num_classes = len(set(data.table['category_id']))
-    assert batch_size % self.num_classes == 0, "For Online Loader, batch size must be a multiple of the number of classes ({})".format(self.num_classes)
+    assert batch_size % 3 == 0, "For Online Loader, batch size must be a multiple of 3"
 
     super().__init__(data, batch_size, "Online Triplets Loader")
 
@@ -20,11 +20,11 @@ class OnlineLoader(Loader):
     classes = list(set(self.data.table['category_id']))
 
     index = 0
+    class_idx = 0
     while (index < len(self.data.table)):
-      batch = [[],[], []]
-      class_idx = 0
+      batch = [[],[],[]]
       for i in range(batch_size):
-        num_class_samples = min(batch_size // self.num_classes, batch_size - len(batch[0]))
+        num_class_samples = min(3, batch_size - len(batch[0]))
         for g in range(num_class_samples):
           if (len(map_label_indices[classes[class_idx]]) == 0):
             map_label_indices[classes[class_idx]] = np.flatnonzero(self.data.table['category_id'] == classes[class_idx]).tolist()
@@ -42,6 +42,7 @@ class OnlineLoader(Loader):
           print(">"*perc + "-"*(50-perc))
 
         class_idx = class_idx+1 if class_idx < len(classes)-1 else 0
+      print(batch[1])
       batches.append(batch)
     return batches
 

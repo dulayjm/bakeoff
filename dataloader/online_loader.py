@@ -42,7 +42,6 @@ class OnlineLoader(Loader):
           print(">"*perc + "-"*(50-perc))
 
         class_idx = class_idx+1 if class_idx < len(classes)-1 else 0
-      print(batch[1])
       batches.append(batch)
     return batches
 

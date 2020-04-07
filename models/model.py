@@ -35,6 +35,7 @@ class Model():
   def randomizeLastLayers(self, block, num_pretrain, layer_idx=0):
     # randomize layers once number of requested pretrained layers reached
     for layer in block.children():
+      print(layer)
       # if the layer contains layers within itself, iterate over those layers with recursion
       if (type(layer)==torch.nn.Sequential or type(layer)==torchvision.models.resnet.BasicBlock):
         layer_idx = self.randomizeLastLayers(layer, num_pretrain, layer_idx)

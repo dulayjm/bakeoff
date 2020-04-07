@@ -29,6 +29,7 @@ class Model():
     self.scheduler = lr_scheduler.StepLR(self.optimizer, step_size=step_size, gamma=0.1)
 
     self.randomizeLastLayers(self.model, pretrained)
+    sys.exit()
 
   # block can be entire model of block of layers within model
   def randomizeLastLayers(self, block, num_pretrain, layer_idx=0):
@@ -48,6 +49,7 @@ class Model():
             logging.debug(layer, ' of index ', layer_idx, ' is pretrained')
             layer_idx += 1
     # return layer index so recursive calls can keep track
+    print(layer_index)
     return layer_idx
 
   def train(self):

@@ -1,9 +1,9 @@
 from .alexnet import Alexnet
 from .googlenet import Googlenet
-from .resnet import Resnet
+from .resnet18 import Resnet18
 
 __factory = {
-    'resnet': Resnet,
+    'resnet18': Resnet18,
     'googlenet': Googlenet,
     'alexnet': Alexnet,
 }

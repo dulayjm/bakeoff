@@ -26,7 +26,7 @@ parser.add_argument('-step_size', default=7, required=False,
                     help='number of epochs between decreasing learning rate')
 parser.add_argument('-feature_extracting', default=False, required=False,
                     help='should the model be feature extracting')
-parser.add_argument('-lr', default=0.001, required=False,
+parser.add_argument('-lr', default=0.01, required=False,
                     help='optimizer learning rate')
 parser.add_argument('-output_layers', default=256, required=False,
                     help='number of output layers')

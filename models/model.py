@@ -49,7 +49,7 @@ class Model():
             logging.debug(layer, ' of index ', layer_idx, ' is pretrained')
             layer_idx += 1
     # return layer index so recursive calls can keep track
-    print(layer_index)
+    print(layer_idx)
     return layer_idx
 
   def train(self):

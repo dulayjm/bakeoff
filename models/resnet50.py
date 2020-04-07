@@ -10,7 +10,7 @@ class Resnet50(Model):
 
         super().__init__(loaders, resnet, loss_fn, acc_fn, epochs, pretrained, step_size, feature_extracting, lr, output_layers, name=name, visualize=visualize)
         self.activated_features = SaveFeatures(self.model._modules.get('layer4'))
-        for layer in self.model._modules():
+        for layer in self.model._modules:
             print(layer)
         sys.exit()
 

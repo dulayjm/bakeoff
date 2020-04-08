@@ -3,7 +3,7 @@ from torch import nn
 from torch.autograd import Variable
 import numpy as np
 from device import device
-
+import sys
 import logging
 
 
@@ -39,7 +39,11 @@ class BatchAllLoss(nn.Module):
 
         num_instances = len(pos_dist)//n + 1
         num_neg_instances = n - num_instances
+        print(len(pos_dist))
+        print(len(pos_dist)//(num_instances-1))
+        print(num_instances-1)
         pos_dist = pos_dist.reshape(len(pos_dist)//(num_instances-1), num_instances-1)
+        sys.exit()
         neg_dist = neg_dist.reshape(len(neg_dist)//(num_neg_instances), num_neg_instances)
 
         loss = list()

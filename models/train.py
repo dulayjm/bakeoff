@@ -34,8 +34,8 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
         for phase in dataloaders:
             logging.debug("Entering {} phase...".format(phase))
 
-            running_outputs = np.empty().cpu()
-            running_labels = np.empty().cpu()
+            running_outputs = np.array([])
+            running_labels = np.array([])
             running_loss = 0.0
             image_count = 0
 
@@ -69,8 +69,12 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                     # track epoch total loss
                     running_loss += loss.data.item()
                 if phase == 'valid':
-                    np.append(running_outputs, outputs.cpu().detach().numpy())
-                    np.append(running_labels, labels.cpu().detach().numpy())
+                    if running_outputs.size > 0:
+                        np.concatenate((running_outputs, outputs.cpu().detach().numpy()), axis=0)
+                        np.concatenate((running_labels, labels.cpu().detach().numpy()), axis=None)
+                    else:
+                        running_outputs = outputs.cpu().detach().numpy()
+                        running_labels = labels.cpu().detach().numpy()
             if phase == "valid":
                 acc, img_pairs = acc_fn.get_acc(torch.FloatTensor(running_outputs).to(device), torch.IntTensor(running_labels).to(device))
                 # iterate through each image and its most similar image in batch
@@ -91,7 +95,7 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                         visualize(features, files, out_file, images[0].shape[1:3])
 
                 logging.info("{} acc: {}".format(phase, acc))
-                best_acc = avg_acc if phase is "valid" and avg_acc > best_acc else best_acc
+                best_acc = acc if phase is "valid" and acc > best_acc else acc
             avg_loss = running_loss / num_batches
             logging.info("{} loss: {}".format(phase, avg_loss))
 

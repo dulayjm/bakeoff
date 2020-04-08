@@ -45,6 +45,8 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
             num_batches = 0
             for data in batched_data[phase]:
                 num_batches += 1
+                running_outputs = []
+                running_labels = []
                 print("epoch {}/{}: {} batch {} of {}".format(epoch+1, num_epochs, phase, num_batches, len(batched_data[phase])))
 
                 # zero the parameter gradients
@@ -66,30 +68,30 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
 
                     # track epoch total loss
                     running_loss += loss.data.item()
+                running_outputs.extend(outputs)
+                running_labels.extend(labels)
 
-                    acc, img_pairs = acc_fn.get_acc(outputs, labels)
-                    # iterate through each image and its most similar image in batch
-                    for pair_id, [idx1, idx2, correct] in enumerate(img_pairs):
-                        if (str(labels[idx1].item()) == classOfInterest or classOfInterest is 'all'):
-                            # extract features from last convolutional layer
-                            features = [hook.features[idx1], hook.features[idx2]]
-                            # save fileNames for opening image
-                            files = [fileNames[idx1], fileNames[idx2]]
-                            # convert int correct value to word
-                            correct = 'correct' if correct else 'incorrect'
-                            # construct visualization file name based on pair id and labels
-                            folder = 'results/{}/maps/epoch{}/{}/'.format(name,epoch+1,phase,num_batches)
-                            if not os.path.exists(folder):
-                                os.makedirs(folder)
-                            out_file = folder + '{}--{}_and_{}--batch{}-{}.png'.format(correct,labels[idx1],labels[idx2],num_batches,pair_id)
-                            # create activation map with original image shape
-                            visualize(features, files, out_file, images[0].shape[1:3])
+            acc, img_pairs = acc_fn.get_acc(running_outputs, running_labels)
+            # iterate through each image and its most similar image in batch
+            for pair_id, [idx1, idx2, correct] in enumerate(img_pairs):
+                if (str(labels[idx1].item()) == classOfInterest or classOfInterest is 'all'):
+                    # extract features from last convolutional layer
+                    features = [hook.features[idx1], hook.features[idx2]]
+                    # save fileNames for opening image
+                    files = [fileNames[idx1], fileNames[idx2]]
+                    # convert int correct value to word
+                    correct = 'correct' if correct else 'incorrect'
+                    # construct visualization file name based on pair id and labels
+                    folder = 'results/{}/maps/epoch{}/'.format(name,epoch+1,phase)
+                    if not os.path.exists(folder):
+                        os.makedirs(folder)
+                    out_file = folder + '{}--{}_and_{}--{}.png'.format(correct,labels[idx1],labels[idx2],pair_id)
+                    # create activation map with original image shape
+                    visualize(features, files, out_file, images[0].shape[1:3])
 
-                    logging.debug("{} batch {} top 1 acc: {}".format(phase, num_batches, acc))
-                    running_acc += acc
 
             avg_loss = running_loss / num_batches
-            avg_acc = running_acc / num_batches
+            avg_acc = acc / num_batches
             logging.info("{} loss: {}".format(phase, avg_loss))
             logging.info("{} acc: {}".format(phase, avg_acc))
             best_acc = avg_acc if phase is "valid" and avg_acc > best_acc else best_acc

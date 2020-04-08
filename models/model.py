@@ -8,7 +8,7 @@ from models.train import train_model
 from models.save_features import SaveFeatures
 
 class Model():
-  def __init__(self, dataloaders, model, loss_fn, acc_fn, epochs=20, pretrained=0, step_size=7, feature_extracting=False, lr=0.01, output_layers=256, name="model", visualize="none"):
+  def __init__(self, dataloaders, model, loss_fn, acc_fn, epochs=20, pretrained=0, step_size=7, feature_extracting=False, lr=0.01, output_size=256, name="model", visualize="none"):
     self.epochs = epochs
 
     self.loss_fn = loss_fn
@@ -18,7 +18,7 @@ class Model():
     self.name = name
     self.classOfInterest = visualize
 
-    self.output_layers = output_layers
+    self.output_size = output_size
 
     if feature_extracting:
         for param in model.parameters():

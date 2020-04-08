@@ -28,8 +28,8 @@ parser.add_argument('-feature_extracting', default=False, required=False,
                     help='should the model be feature extracting')
 parser.add_argument('-lr', default=0.01, required=False,
                     help='optimizer learning rate')
-parser.add_argument('-output_layers', default=256, required=False,
-                    help='number of output layers')
+parser.add_argument('-output_size', default=256, required=False,
+                    help='output layer size)
 parser.add_argument('-name', default='model', required=True,
                     help='custom model name')
 parser.add_argument('-dataset', default='MNIST', required=True,
@@ -56,7 +56,7 @@ model_param = {
   "step_size": int(args.step_size),
   "feature_extracting": bool(args.feature_extracting),
   "learning_rate": float(args.lr),
-  "output_layers": int(args.output_layers),
+  "output_size": int(args.output_size),
   "name": args.name,
   "visualization class": args.visualize
 }
@@ -70,7 +70,7 @@ model = models.create(args.model,
                 model_param["step_size"], 
                 model_param["feature_extracting"], 
                 model_param["learning_rate"], 
-                model_param["output_layers"], 
+                model_param["output_size"], 
                 model_param["name"],
                 model_param["visualization class"]
               )

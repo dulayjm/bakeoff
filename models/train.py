@@ -34,8 +34,8 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
         for phase in dataloaders:
             logging.debug("Entering {} phase...".format(phase))
 
-            running_outputs = []
-            running_labels = []
+            running_outputs = [].to(device)
+            running_labels = [].to(device)
             running_loss = 0.0
             image_count = 0
 

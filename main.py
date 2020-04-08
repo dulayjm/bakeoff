@@ -29,7 +29,7 @@ parser.add_argument('-feature_extracting', default=False, required=False,
 parser.add_argument('-lr', default=0.01, required=False,
                     help='optimizer learning rate')
 parser.add_argument('-output_size', default=256, required=False,
-                    help='output layer size)
+                    help='output layer size')
 parser.add_argument('-name', default='model', required=True,
                     help='custom model name')
 parser.add_argument('-dataset', default='MNIST', required=True,

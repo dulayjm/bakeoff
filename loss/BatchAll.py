@@ -40,7 +40,6 @@ class BatchAllLoss(nn.Module):
         num_instances = len(pos_dist)//n + 1
         num_neg_instances = n - num_instances
         pos_dist = pos_dist.reshape(len(pos_dist)//(num_instances-1), num_instances-1)
-        sys.exit()
         neg_dist = neg_dist.reshape(len(neg_dist)//(num_neg_instances), num_neg_instances)
 
         loss = list()

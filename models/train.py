@@ -33,6 +33,8 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
         for phase in dataloaders:
             logging.debug("Entering {} phase...".format(phase))
 
+            running_outputs = []
+            running_labels = []
             running_loss = 0.0
             running_acc = 0.0
             image_count = 0
@@ -45,8 +47,6 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
             num_batches = 0
             for data in batched_data[phase]:
                 num_batches += 1
-                running_outputs = []
-                running_labels = []
                 print("epoch {}/{}: {} batch {} of {}".format(epoch+1, num_epochs, phase, num_batches, len(batched_data[phase])))
 
                 # zero the parameter gradients
@@ -72,7 +72,7 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                 running_labels.extend(labels)
 
             print("Outputs: ", len(running_outputs))
-            print("Labels: ", len(running_label))
+            print("Labels: ", len(running_labels))
             print(running_labels)
             acc, img_pairs = acc_fn.get_acc(running_outputs, running_labels)
             print("IMAGE PAIRS: ", img_pairs)

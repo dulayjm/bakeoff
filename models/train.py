@@ -70,8 +70,6 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                     running_loss += loss.data.item()
                 running_outputs.extend(outputs)
                 running_labels.extend(labels)
-
-            print(running_labels)
             acc, img_pairs = acc_fn.get_acc(running_outputs, running_labels)
             # iterate through each image and its most similar image in batch
             for pair_id, [idx1, idx2, correct] in enumerate(img_pairs):

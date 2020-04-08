@@ -16,3 +16,26 @@ class Resnet50(Model):
         num_ftrs = self.model.fc.in_features
         self.model.fc = torch.nn.Linear(num_ftrs, self.output_layers)
         return torch.optim.SGD(self.model.parameters(), lr=lr, momentum=0.9)
+
+    
+    # block can be entire model of block of layers within model
+    def randomizeLastLayers(self, block, num_pretrain, layer_idx=0):
+        # randomize layers once number of requested pretrained layers reached
+        for layer in block.children():
+        print(layer)
+        # if the layer contains layers within itself, iterate over those layers with recursion
+        if (type(layer)==torch.nn.Sequential or type(layer)==torchvision.models.resnet.Bottleneck):
+            layer_idx = self.randomizeLastLayers(layer, num_pretrain, layer_idx)
+        else:
+            # only consider linear and convolutional layers for randomization
+            if type(layer)==torch.nn.Linear or type(layer)==torch.nn.Conv2d:
+            if (layer_idx >= num_pretrain):
+                logging.debug(layer, ' of index ', layer_idx, ' randomized')
+                layer.weight.data=torch.randn(layer.weight.size())*.01 #Random weight initialisation
+                layer_idx += 1
+            else:
+                logging.debug(layer, ' of index ', layer_idx, ' is pretrained')
+                layer_idx += 1
+        # return layer index so recursive calls can keep track
+        print(layer_idx)
+        return layer_idx

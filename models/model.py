@@ -28,7 +28,6 @@ class Model():
     self.scheduler = lr_scheduler.StepLR(self.optimizer, step_size=step_size, gamma=0.1)
 
     self.randomizeLastLayers(self.model, pretrained)
-    sys.exit()
 
   def train(self):
     start_time = time.time()

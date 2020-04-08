@@ -70,8 +70,8 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                     running_loss += loss.data.item()
                 if phase == 'valid':
                     if running_outputs.size > 0:
-                        np.concatenate((running_outputs, outputs.cpu().detach().numpy()), axis=0)
-                        np.concatenate((running_labels, labels.cpu().detach().numpy()), axis=None)
+                        running_outputs = np.concatenate((running_outputs, outputs.cpu().detach().numpy()))
+                        running_labels = np.concatenate((running_labels, labels.cpu().detach().numpy()))
                     else:
                         running_outputs = outputs.cpu().detach().numpy()
                         running_labels = labels.cpu().detach().numpy()

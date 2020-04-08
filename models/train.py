@@ -36,7 +36,6 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
             running_outputs = []
             running_labels = []
             running_loss = 0.0
-            running_acc = 0.0
             image_count = 0
 
             if phase == 'train':
@@ -70,32 +69,31 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                     running_loss += loss.data.item()
                 running_outputs.extend(outputs)
                 running_labels.extend(labels)
-            acc, img_pairs = acc_fn.get_acc(running_outputs, running_labels)
-            # iterate through each image and its most similar image in batch
-            for pair_id, [idx1, idx2, correct] in enumerate(img_pairs):
-                if (str(labels[idx1].item()) == classOfInterest or classOfInterest is 'all'):
-                    # extract features from last convolutional layer
-                    features = [hook.features[idx1], hook.features[idx2]]
-                    # save fileNames for opening image
-                    files = [fileNames[idx1], fileNames[idx2]]
-                    # convert int correct value to word
-                    correct = 'correct' if correct else 'incorrect'
-                    # construct visualization file name based on pair id and labels
-                    folder = 'results/{}/maps/epoch{}/'.format(name,epoch+1,phase)
-                    if not os.path.exists(folder):
-                        os.makedirs(folder)
-                    out_file = folder + '{}--{}_and_{}--{}.png'.format(correct,labels[idx1],labels[idx2],pair_id)
-                    # create activation map with original image shape
-                    visualize(features, files, out_file, images[0].shape[1:3])
+            if phase == "valid":
+                acc, img_pairs = acc_fn.get_acc(running_outputs, running_labels)
+                # iterate through each image and its most similar image in batch
+                for pair_id, [idx1, idx2, correct] in enumerate(img_pairs):
+                    if (str(labels[idx1].item()) == classOfInterest or classOfInterest is 'all'):
+                        # extract features from last convolutional layer
+                        features = [hook.features[idx1], hook.features[idx2]]
+                        # save fileNames for opening image
+                        files = [fileNames[idx1], fileNames[idx2]]
+                        # convert int correct value to word
+                        correct = 'correct' if correct else 'incorrect'
+                        # construct visualization file name based on pair id and labels
+                        folder = 'results/{}/maps/epoch{}/'.format(name,epoch+1,phase)
+                        if not os.path.exists(folder):
+                            os.makedirs(folder)
+                        out_file = folder + '{}--{}_and_{}--{}.png'.format(correct,labels[idx1],labels[idx2],pair_id)
+                        # create activation map with original image shape
+                        visualize(features, files, out_file, images[0].shape[1:3])
 
-
+                logging.info("{} acc: {}".format(phase, acc))
+                best_acc = avg_acc if phase is "valid" and avg_acc > best_acc else best_acc
             avg_loss = running_loss / num_batches
-            avg_acc = acc / num_batches
             logging.info("{} loss: {}".format(phase, avg_loss))
-            logging.info("{} acc: {}".format(phase, avg_acc))
-            best_acc = avg_acc if phase is "valid" and avg_acc > best_acc else best_acc
 
-            results.append([epoch+1, phase, avg_loss, avg_acc])
+            results.append([epoch+1, phase, avg_loss, acc])
 
         scheduler.step()
 
@@ -108,7 +106,7 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
     valid = []
     for index, row in results.iterrows():
         if row['phase'] == 'train':
-            train.append([row['epoch'], row['loss'], row['accuracy']])
+            train.append([row['epoch'], row['loss'], 0])
         elif row['phase'] == 'valid':
             valid.append([row['epoch'], row['loss'], row['accuracy']])
     train = pd.DataFrame(train, columns=['epoch', 'loss', 'accuracy'])

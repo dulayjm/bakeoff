@@ -55,7 +55,6 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                 images, labels, fileNames = data
             
                 outputs = model(torch.stack(images).to(device))
-                labels = torch.IntTensor(labels).to(device)
 
                 loss = criterion(outputs, labels)
                 logging.debug("{} batch {} loss: {}".format(phase, num_batches, loss))
@@ -68,8 +67,9 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
 
                     # track epoch total loss
                     running_loss += loss.data.item()
-                running_outputs.extend(outputs)
-                running_labels.extend(labels)
+                if phase == 'valid':
+                    running_outputs.extend(outputs)
+                    running_labels.extend(torch.IntTensor(labels).to(device))
             if phase == "valid":
                 acc, img_pairs = acc_fn.get_acc(torch.FloatTensor(running_outputs).to(device), torch.IntTensor(running_labels).to(device))
                 # iterate through each image and its most similar image in batch

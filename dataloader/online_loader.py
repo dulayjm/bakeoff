@@ -36,10 +36,10 @@ class OnlineLoader(Loader):
           index += 1
 
           # log progress
-          # system('clear')
-          # print("Loading dataloader...")
-          # perc = index*50//len(self.data.table)
-          # print(">"*perc + "-"*(50-perc))
+          system('clear')
+          print("Loading dataloader...")
+          perc = index*50//len(self.data.table)
+          print(">"*perc + "-"*(50-perc))
 
         class_idx = class_idx+1 if class_idx < len(classes)-1 else 0
       batches.append(batch)

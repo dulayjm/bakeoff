@@ -34,8 +34,10 @@ class KNN():
     # get labels of most similar images
     knn_labels = [labels[index] for index in knn_indices]
     if (anchor_label == knn_labels[0]):
+      print("CORRECT")
       return 1, knn_indices[0]
     else:
+      print("INCORRECT")
       return 0, knn_indices[0]
 
   def __str__(self):

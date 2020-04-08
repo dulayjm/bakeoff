@@ -1,6 +1,5 @@
 from torch.optim import lr_scheduler
 import torch
-import torchvision
 import time
 import logging
 import sys

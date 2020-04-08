@@ -1,4 +1,5 @@
 from torchvision import models
+import torchvision
 import torch
 from models.model import Model
 from models.save_features import SaveFeatures

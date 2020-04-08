@@ -15,6 +15,7 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
     # send to the gpu if available
     model.to(device)
 
+    acc = 0.0
     best_acc = 0.0
     best_model_wts = model.state_dict()
 

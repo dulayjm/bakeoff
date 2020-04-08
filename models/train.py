@@ -71,11 +71,8 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                 running_outputs.extend(outputs)
                 running_labels.extend(labels)
 
-            print("Outputs: ", len(running_outputs))
-            print("Labels: ", len(running_labels))
             print(running_labels)
             acc, img_pairs = acc_fn.get_acc(running_outputs, running_labels)
-            print("IMAGE PAIRS: ", img_pairs)
             # iterate through each image and its most similar image in batch
             for pair_id, [idx1, idx2, correct] in enumerate(img_pairs):
                 if (str(labels[idx1].item()) == classOfInterest or classOfInterest is 'all'):

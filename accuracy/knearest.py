@@ -33,8 +33,6 @@ class KNN():
     knn_indices = knn.indices.tolist()[1:]
     # get labels of most similar images
     knn_labels = [labels[index] for index in knn_indices]
-    print("Anchor: ", anchor_label)
-    print("Nearest: ", knn_labels)
     if (anchor_label == knn_labels[0]):
       return 1, knn_indices[0]
     else:

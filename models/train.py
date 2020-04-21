@@ -56,7 +56,6 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                 optimizer.zero_grad()
 
                 images, labels, fileNames = data
-                print(labels)
                 outputs = model(torch.stack(images).to(device))
                 if not torch.isnan(outputs).any():
                     labels = torch.IntTensor(labels).to(device)

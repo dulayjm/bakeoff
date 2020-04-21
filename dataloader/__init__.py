@@ -6,7 +6,8 @@ __factory = {
     'triplet': OfflineLoader,
     'batchhard': OnlineLoader,
     'batchall': OnlineLoader,
-    'badbatchall': OnlineLoader
+    'badbatchall': OnlineLoader,
+    'ephn': OnlineLoader
 }
 
 

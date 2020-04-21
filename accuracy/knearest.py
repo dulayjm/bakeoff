@@ -27,7 +27,9 @@ class KNN():
 
     # get closest outputs to test image
     dist = torch.norm(weights - anchor, dim=1, p=None)
-    knn = dist.topk(5, largest=False)
+
+    knn = torch.topk(dist, 5, largest=False)
+
 
     # get indices of most similar images, excluding the first one as that will always be the image itself
     knn_indices = knn.indices.tolist()[1:]

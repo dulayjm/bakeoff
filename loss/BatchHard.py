@@ -44,22 +44,25 @@ class BatchHardLoss(nn.Module):
 
   def forward(self, outputs, labels):
     batch_size = outputs.size(0)
+    print("OUT:", outputs)
     dist_mat = euclidean_distances(outputs)
+    print("Dist:", dist_mat)
     ID_mat = compute_ID_mat(labels)
 
     pos_dist_mat = Variable(torch.zeros(batch_size, batch_size).to(device))
     pos_dist_mat = torch.addcmul(pos_dist_mat, 1, ID_mat, dist_mat)
-
+    
+    
     neg_dist_mat = Variable(torch.zeros(batch_size, batch_size).to(device))
     neg_dist_mat = torch.addcmul(neg_dist_mat, 1, 1-ID_mat, dist_mat)
     mask_ = (neg_dist_mat == 0)
     neg_dist_mat.masked_fill_(mask_, 10000)
-
+    
     hard_pos = torch.max(pos_dist_mat, dim=0)[0]
     hard_neg = torch.min(neg_dist_mat, dim=0)[0]
-
-    triplet_losses = torch.clamp(hard_pos - hard_neg + self.margin, min=0)
     
+    triplet_losses = torch.clamp(hard_pos - hard_neg + self.margin, min=0)
+    print("Losses:",triplet_losses)
     return torch.sum(triplet_losses)/triplet_losses.size(0)
 
   def __str__(self):

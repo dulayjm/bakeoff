@@ -3,10 +3,12 @@ import logging
 import torch
 from os import system
 import os
+import sys
+import math
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from visualizer import visualize
+from visualizer import visualize, map_features
 from device import device
 
 def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, scheduler, num_epochs=10, name="model", classOfInterest="none"):
@@ -44,6 +46,7 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
             else:
                 model.train(False)  # Set model to evaluate mode
             
+            loss = 0
             num_batches = 0
             for data in batched_data[phase]:
                 num_batches += 1
@@ -53,29 +56,34 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
                 optimizer.zero_grad()
 
                 images, labels, fileNames = data
-            
+                print(labels)
                 outputs = model(torch.stack(images).to(device))
-                labels = torch.IntTensor(labels).to(device)
+                if not torch.isnan(outputs).any():
+                    labels = torch.IntTensor(labels).to(device)
 
-                loss = criterion(outputs, labels)
-                logging.debug("{} batch {} loss: {}".format(phase, num_batches, loss))
+                    loss = criterion(outputs, labels)
+                    print("{} batch {} loss: {}".format(phase, num_batches, loss))
+                    if not (loss < 100):
+                        sys.exit()
+                    # backward + optimize only if in training phase
+                    with torch.set_grad_enabled(phase == 'train'):
+                        if phase == 'train':
+                            loss.backward()
+                            optimizer.step()
 
-                # backward + optimize only if in training phase
-                with torch.set_grad_enabled(phase == 'train'):
-                    if phase == 'train':
-                        loss.backward()
-                        optimizer.step()
-
-                    # track epoch total loss
-                    running_loss += loss.data.item()
-                if phase == 'valid':
-                    if running_outputs.size > 0:
-                        running_outputs = np.concatenate((running_outputs, outputs.cpu().detach().numpy()))
-                        running_labels = np.concatenate((running_labels, labels.cpu().detach().numpy()))
-                    else:
-                        running_outputs = outputs.cpu().detach().numpy()
-                        running_labels = labels.cpu().detach().numpy()
+                        # track epoch total loss
+                        running_loss += loss.data.item()
+                    if phase == 'valid':
+                        if running_outputs.size > 0:
+                            running_outputs = np.concatenate((running_outputs, outputs.cpu().detach().numpy()))
+                            running_labels = np.concatenate((running_labels, labels.cpu().detach().numpy()))
+                        else:
+                            running_outputs = outputs.cpu().detach().numpy()
+                            running_labels = labels.cpu().detach().numpy()
             if phase == "valid":
+                # create plot of flattened feature distances
+                print(running_outputs.shape)
+                map_features(running_outputs, running_labels, 'results/{}/map{}'.format(name, epoch+1))
                 acc, img_pairs = acc_fn.get_acc(torch.FloatTensor(running_outputs).to(device), torch.IntTensor(running_labels).to(device))
                 # iterate through each image and its most similar image in batch
                 for pair_id, [idx1, idx2, correct] in enumerate(img_pairs):
@@ -122,14 +130,14 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
     train_loss, = plt.plot(train['epoch'], train['loss'], label = "Training Loss")
     valid_loss, = plt.plot(valid['epoch'], valid['loss'], label = "Validation Loss")
     plt.legend(handles=[train_loss, valid_loss])
+    plt.ylim(0, 2)
     plt.xlabel("Epoch")
     plt.xticks([1,5,10,15])
     plt.title(name)
     plt.savefig('results/{}/loss.png'.format(name))
     plt.clf()
-    train_loss, = plt.plot(train['epoch'], train['accuracy'], label = "Training Accuracy")
     valid_loss, = plt.plot(valid['epoch'], valid['accuracy'], label = "Validation Accuracy")
-    plt.legend(handles=[train_loss, valid_loss])
+    plt.legend(handles=[valid_loss])
     plt.ylim(0, 1)
     plt.xlabel("Epoch")
     plt.xticks([1,5,10,15])

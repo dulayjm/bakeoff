@@ -2,12 +2,14 @@ from .triplet import TripletLoss
 from .BatchHard import BatchHardLoss
 from .BatchAll import BatchAllLoss
 from .BadBatchAll import BadBatchAllLoss
+from .EPHNLoss import EPHNLoss
 
 __factory = {
     'triplet': TripletLoss,
     'batchhard': BatchHardLoss,
     'batchall': BatchAllLoss,
     'badbatchall': BadBatchAllLoss
+    'ephn': EPHNLoss
 }
 
 

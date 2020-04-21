@@ -8,7 +8,7 @@ __factory = {
     'triplet': TripletLoss,
     'batchhard': BatchHardLoss,
     'batchall': BatchAllLoss,
-    'badbatchall': BadBatchAllLoss
+    'badbatchall': BadBatchAllLoss,
     'ephn': EPHNLoss
 }
 

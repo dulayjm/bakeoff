@@ -8,7 +8,7 @@ from .loader import Loader
 class OnlineLoader(Loader):
   def __init__(self, data, batch_size):
     self.num_classes = len(set(data.table['category_id']))
-    assert batch_size % 8 == 0, "For Online Loader, batch size must be a multiple of 8"
+    assert batch_size % 16 == 0, "For Online Loader, batch size must be a multiple of 16"
 
     super().__init__(data, batch_size, "Online Triplets Loader")
 
@@ -24,7 +24,7 @@ class OnlineLoader(Loader):
     while (index < len(self.data.table)):
       batch = [[],[],[]]
       for i in range(batch_size):
-        num_class_samples = min(8, batch_size - len(batch[0]))
+        num_class_samples = min(16, batch_size - len(batch[0]))
         for g in range(num_class_samples):
           if (len(map_label_indices[classes[class_idx]]) == 0):
             map_label_indices[classes[class_idx]] = np.flatnonzero(self.data.table['category_id'] == classes[class_idx]).tolist()

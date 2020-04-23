@@ -24,7 +24,7 @@ class OnlineLoader(Loader):
     while (index < len(self.data.table)):
       batch = [[],[],[]]
       for i in range(batch_size):
-        num_class_samples = min(3, batch_size - len(batch[0]))
+        num_class_samples = min(8, batch_size - len(batch[0]))
         for g in range(num_class_samples):
           if (len(map_label_indices[classes[class_idx]]) == 0):
             map_label_indices[classes[class_idx]] = np.flatnonzero(self.data.table['category_id'] == classes[class_idx]).tolist()

@@ -8,7 +8,7 @@ from .loader import Loader
 class OnlineLoader(Loader):
   def __init__(self, data, batch_size):
     self.num_classes = len(set(data.table['category_id']))
-    assert batch_size % 3 == 0, "For Online Loader, batch size must be a multiple of 3"
+    assert batch_size % 8 == 0, "For Online Loader, batch size must be a multiple of 8"
 
     super().__init__(data, batch_size, "Online Triplets Loader")
 

@@ -23,7 +23,7 @@ def euclidean_distances(X):
   mask = I_mat.ge(0.5)
   distances = distances.masked_fill(Variable(mask), 0)
 
-  distances = torch.clamp(distances, min=0)
+  distances = torch.clamp(distances, min=0.1**-16)
   distances = torch.sqrt(distances)
   return distances
 

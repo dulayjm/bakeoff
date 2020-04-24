@@ -57,28 +57,27 @@ def train_model(dataloaders, model, criterion, hook, acc_fn, optimizer, schedule
 
                 images, labels, fileNames = data
                 outputs = model(torch.stack(images).to(device))
-                if not torch.isnan(outputs).any():
-                    labels = torch.IntTensor(labels).to(device)
+                labels = torch.IntTensor(labels).to(device)
 
-                    loss = criterion(outputs, labels)
-                    print("{} batch {} loss: {}".format(phase, num_batches, loss))
-                    if not (loss < 100):
-                        sys.exit()
-                    # backward + optimize only if in training phase
-                    with torch.set_grad_enabled(phase == 'train'):
-                        if phase == 'train':
-                            loss.backward()
-                            optimizer.step()
+                loss = criterion(outputs, labels)
+                print("{} batch {} loss: {}".format(phase, num_batches, loss))
+                if not (loss < 100):
+                    sys.exit()
+                # backward + optimize only if in training phase
+                with torch.set_grad_enabled(phase == 'train'):
+                    if phase == 'train':
+                        loss.backward()
+                        optimizer.step()
 
-                        # track epoch total loss
-                        running_loss += loss.data.item()
-                    if phase == 'valid':
-                        if running_outputs.size > 0:
-                            running_outputs = np.concatenate((running_outputs, outputs.cpu().detach().numpy()))
-                            running_labels = np.concatenate((running_labels, labels.cpu().detach().numpy()))
-                        else:
-                            running_outputs = outputs.cpu().detach().numpy()
-                            running_labels = labels.cpu().detach().numpy()
+                    # track epoch total loss
+                    running_loss += loss.data.item()
+                if phase == 'valid':
+                    if running_outputs.size > 0:
+                        running_outputs = np.concatenate((running_outputs, outputs.cpu().detach().numpy()))
+                        running_labels = np.concatenate((running_labels, labels.cpu().detach().numpy()))
+                    else:
+                        running_outputs = outputs.cpu().detach().numpy()
+                        running_labels = labels.cpu().detach().numpy()
             if phase == "valid":
                 # create plot of flattened feature distances
                 print(running_outputs.shape)

@@ -29,9 +29,12 @@ class Model():
 
     self.randomizeLastLayers(self.model, pretrained)
 
+  def setHyperparameters(self, hyperparameters):
+    self.hyperparameters = hyperparameters
+  
   def train(self):
     start_time = time.time()
-    train_model(
+    _, acc = train_model(
       self.loaders,
       self.model,
       self.loss_fn,
@@ -44,6 +47,7 @@ class Model():
       classOfInterest=self.classOfInterest
     )
     logging.info('Training time: {:10f} minutes'.format((time.time()-start_time)/60))
+    return acc
 
   def get_optimizer(self, lr):
     return optim.SGD(self.model.parameters(), lr=lr, momentum=0.9)

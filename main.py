@@ -1,4 +1,5 @@
 from __future__ import absolute_import, print_function
+from ray import tune
 import numpy as np
 import argparse
 import logging
@@ -45,7 +46,38 @@ data = datasets.create(args.dataset)
 train_loader = dataloader.create(args.loss_fn, data.train, int(args.batch_size))
 valid_loader = dataloader.create(args.loss_fn, data.valid, int(args.batch_size))
 
-model_param = {
+def train_model(config):
+    model = models.create(args.model,
+                config["loaders"], 
+                config["loss_fn"], 
+                config["acc_fn"], 
+                config["epochs"], 
+                config["pretrained"], 
+                config["step_size"], 
+                config["feature_extracting"], 
+                config["learning_rate"], 
+                config["output_size"], 
+                config["name"],
+                config["visualization class"]
+              )
+
+    if not os.path.exists("results/{}/".format(config["name"])):
+        os.makedirs("results/{}/".format(config["name"]))
+
+    # setup logging and turn off PIL plugin logging
+    logging.basicConfig(filename="results/{}/training.log".format(config["name"]), level=logging.INFO, format='%(asctime)s:%(name)s:%(levelname)s::  %(message)s')
+    pil_logger = logging.getLogger('PIL')
+    pil_logger.setLevel(logging.INFO)
+
+    logging.info("-"*50)
+    logging.info("New Model")
+
+    for param in config:
+      logging.info("{}: {}".format(param, str(config[param])))
+#     model.train()
+    tune.track.log(mean_accuracy=model.train())
+
+config = {
   "dataset": args.dataset,
   "batch size": int(args.batch_size),
   "loaders": {'train':train_loader, 'valid':valid_loader},
@@ -55,38 +87,19 @@ model_param = {
   "pretrained": int(args.pretrain),
   "step_size": int(args.step_size),
   "feature_extracting": bool(args.feature_extracting),
-  "learning_rate": float(args.lr),
+  "learning_rate": tune.grid_search([0.001, 0.01, 0.1]),
   "output_size": int(args.output_size),
   "name": args.name,
   "visualization class": args.visualize
 }
+# train_model(config)
+analysis = tune.run(train_model, 
+                    config=config, 
+                    resources_per_trial={
+                         "cpu": 1,
+                         "gpu": 1
+                     }
+                   )
+print("Best config: ", analysis.get_best_config(metric="mean_accuracy"))
 
-model = models.create(args.model,
-                model_param["loaders"], 
-                model_param["loss_fn"], 
-                model_param["acc_fn"], 
-                model_param["epochs"], 
-                model_param["pretrained"], 
-                model_param["step_size"], 
-                model_param["feature_extracting"], 
-                model_param["learning_rate"], 
-                model_param["output_size"], 
-                model_param["name"],
-                model_param["visualization class"]
-              )
 
-if not os.path.exists("results/{}/".format(model_param["name"])):
-    os.makedirs("results/{}/".format(model_param["name"]))
-
-# setup logging and turn off PIL plugin logging
-logging.basicConfig(filename="results/{}/training.log".format(model_param["name"]), level=logging.INFO, format='%(asctime)s:%(name)s:%(levelname)s::  %(message)s')
-pil_logger = logging.getLogger('PIL')
-pil_logger.setLevel(logging.INFO)
-
-logging.info("-"*50)
-logging.info("New Model")
-
-for param in model_param:
-  logging.info("{}: {}".format(param, str(model_param[param])))
-
-model.train()

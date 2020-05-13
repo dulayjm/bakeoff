@@ -74,8 +74,8 @@ def train_model(config):
 
     for param in config:
       logging.info("{}: {}".format(param, str(config[param])))
-#     model.train()
-    tune.track.log(mean_accuracy=model.train())
+    model.train()
+#     tune.track.log(mean_accuracy=model.train())
 
 config = {
   "dataset": args.dataset,
@@ -87,19 +87,20 @@ config = {
   "pretrained": int(args.pretrain),
   "step_size": int(args.step_size),
   "feature_extracting": bool(args.feature_extracting),
-  "learning_rate": tune.grid_search([0.001, 0.01, 0.1]),
+  "learning_rate": float(args.lr),
+#     tune.grid_search([0.001, 0.01, 0.1]),
   "output_size": int(args.output_size),
   "name": args.name,
   "visualization class": args.visualize
 }
-# train_model(config)
-analysis = tune.run(train_model, 
-                    config=config, 
-                    resources_per_trial={
-                         "cpu": 1,
-                         "gpu": 1
-                     }
-                   )
-print("Best config: ", analysis.get_best_config(metric="mean_accuracy"))
+train_model(config)
+# analysis = tune.run(train_model, 
+#                     config=config, 
+#                     resources_per_trial={
+#                          "cpu": 1,
+#                          "gpu": 1
+#                      }
+#                    )
+# print("Best config: ", analysis.get_best_config(metric="mean_accuracy"))
 
 

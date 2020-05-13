@@ -34,7 +34,7 @@ class Model():
   
   def train(self):
     start_time = time.time()
-    _, acc = train_model(
+    trained_model, acc = train_model(
       self.loaders,
       self.model,
       self.loss_fn,

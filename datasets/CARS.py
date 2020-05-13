@@ -5,7 +5,7 @@ import pandas as pd
 
 class CARS(Data):
     def __init__(self):
-        CARS_dir = '/student/rolwesg/Data/CARS/'
+        CARS_dir = '/lab/vislab/DATA/CARS/'
         CARS_img_size = 256
         self.name = "CARS"
         super().__init__(CARS_dir, CARS_img_size)

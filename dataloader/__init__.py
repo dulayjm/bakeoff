@@ -1,9 +1,7 @@
 from .loader import Loader
-from .offline_loader import OfflineLoader
 from .online_loader import OnlineLoader
 
 __factory = {
-    'triplet': OfflineLoader,
     'batchhard': OnlineLoader,
     'batchall': OnlineLoader,
     'badbatchall': OnlineLoader,

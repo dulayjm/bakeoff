@@ -29,7 +29,7 @@ class Data():
     def get_data(self):
         train = []
         for class_index, label in enumerate(self.classes):
-            path = self.data_dir + label + '/'
+            path = self.data_dir# + label + '/'
             for file in listdir(path):
                 train.append(['{}/{}'.format(label, file), label, class_index])
 

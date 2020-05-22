@@ -58,7 +58,7 @@ def train_model(config):
                 config["learning_rate"], 
                 config["output_size"], 
                 config["name"],
-                config["visualization class"]
+                # config["visualization class"]
               )
 
     if not os.path.exists("results/{}/".format(config["name"])):

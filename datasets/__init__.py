@@ -1,7 +1,7 @@
-from .Hotels import Hotels
+from .data import Data
 
 __factory = {
-    'Hotels': Hotels
+    'Data': Data
 }
 
 

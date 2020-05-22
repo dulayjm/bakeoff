@@ -13,7 +13,10 @@ class TargetDataset(Dataset):
 
     def __getitem__(self, idx):
         img_name = self.labels.iloc[idx, 0]
+        print("image name is", img_name)
         fullname = join(self.root_dir, img_name)
+        print("fullname is ", fullname)
+
         image = Image.open(fullname).convert('RGB')
         labels = self.labels.iloc[idx, 2]
         if self.transform:
@@ -22,6 +25,7 @@ class TargetDataset(Dataset):
 
     def makeTable(self, table):
         for file in listdir(path):
+            print("current file is: %s\n", file)
             train.append(['{}/{}'.format(label, file), label, class_index])
 
         df = pd.DataFrame(train, columns=['file', 'category', 'category_id',])

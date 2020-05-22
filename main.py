@@ -93,6 +93,11 @@ config = {
   "name": args.name,
   "visualization class": args.visualize
 }
+
+for item in config: 
+  print("This is the item in config: ", config[item])
+
+
 train_model(config)
 # analysis = tune.run(train_model, 
 #                     config=config, 

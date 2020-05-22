@@ -17,7 +17,11 @@ class OnlineLoader(Loader):
     batches = []
     # map each label to the index of all that label's images after shuffling
     map_label_indices = {label: np.flatnonzero(self.data.table['category_id'] == label).tolist() for label in self.data.table['category_id']}
+    print("map", map_label_indices)
     classes = list(set(self.data.table['category_id']))
+    for classs in classes: 
+      print("this is the class (should be hotel number)", classs)
+
 
     index = 0
     class_idx = 0

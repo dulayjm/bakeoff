@@ -28,61 +28,47 @@ class Data:
 
     def sort_classes(self):
         """Function to retrieve only classifiers"""
-        with open('dataset/train_set.csv', newline='') as csvfile:
-            reader = csv.reader(csvfile)
-            classes = np.array(1)
-            for row in reader:
-                class_ = row[1]
-                # append unique to classes
-                if class_ not in classes: 
-                    np.append(classes, class_)
+        # with open('dataset/train_set.csv', newline='') as csvfile:
+        #     reader = csv.reader(csvfile)
+        #     classes = np.array(1)
+        #     for row in reader:
+        #         class_ = row[1]
+        #         # append unique to classes
+        #         if class_ not in classes: 
+        #             np.append(classes, class_)
+
+
+        train = np.genfromtxt ('dataset/train_set.csv', delimiter=",")
+        classes = train[:,1]   
+        # make unique
+        result = []
+        for c in classes: 
+            if c not in result: 
+                result = append(result, c)
 
         #  classes = listdir(self.data_dir)
         # return sorted(classes, key=lambda item: (int(item.partition('.')[0])
         #                        if item[0].isdigit() else float('inf'), item))
-        return classes
+        return result
         
     def get_data(self):
-        """ Retrieve data information from the training set file """
-        # data = np.transpose(loadmat(self.data_dir + 'labels.mat')['annotations'])
-        # transpose permutates the dimenions of an array
-        with open('dataset/train_set.csv', newline='') as csvfile:
-            reader = csv.reader(csvfile)
-            train = np.empty(0, 50000)
-            # result_array = np.empty(data_array.size) # the default dtype is float, so set dtype if it isn't float
-            # for idx, line in enumerate(data_array):
-            # result_array[idx] = do_stuff(line)
-            for row in reader: 
-                class_ = row[1]
-                img_url = row[2]
-                label = row[3] 
-                img = None
-                # access the specific file as a request
-                try: 
-                    response = requests.get(img_url)
-                    img = Image.open(BytesIO(response.content))
-                except: 
-                    print("could not read url", img_url)
-                if img is not None:
-                    np.append(train, [class_, img_url, img, label], axis=0)
-                #  np array: 
-                #  _row_ class image       url                 label
-                #    0   22    hotel.png   http://example.png  traffickam
-                #    1   87    hotel.png   http://example.png  traffickam
-                #    n   j     hotel.png   http://example.png  traffickam
+        """Retrieve data information from the training set file"""
 
-        df = pd.DataFrame(train, columns=['class', 'img_url', 'image', 'label'])
+        csv = np.genfromtxt('/lab/vislab/DATA/Hotels-50K/bakeoff/dataset/train_set.csv', delimiter=",")
+        classes = csv[:,1]   
+        images = csv[:,2]
+        labels = csv[:,3]
+
+        # train = np.concatenate((classes,images,labels),axis=1)
+        train = np.column_stack((classes,images,labels))
+        #    np array: 
+        #    row  class  image      url                 label
+        #    0    22     hotel.png  http://example.png  traffickam
+        #    1    87     hotel.png  http://example.png  traffickam
+        #    n    j      hotel.png  http://example.png  traffickam
+
+
+        df = pd.DataFrame(train, columns=['classes', 'image', 'label'])
         train_data = df.sample(frac=0.7)
-        valid_data = df[~df['img_url'].isin(train_data['img_url'])]
-        return train_data, valid_data   
-
-# class Subset():
-#     def __init__(self, table, data_dir, transform):
-#         self.table = table
-#         self.data_dir = data_dir
-#         self.transform = transform
-#         self.set = TargetDataset(self.table, self.data_dir, transform = self.transform)
-
-#     def shuffle(self):
-#         self.table = self.table.sample(frac=1)
-#         self.set = TargetDataset(self.table, self.data_dir, transform = self.transform)
+        valid_data = df[~df['image'].isin(train_data['image'])]
+        return train_data, valid_data

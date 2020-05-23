@@ -26,6 +26,9 @@ class Data:
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         ])
 
+        self.train = Subset(self.train_data, self.data_dir, self.transform)
+        self.valid = Subset(self.valid_data, self.data_dir, self.transform)
+
     def sort_classes(self):
         """Function to retrieve only classifiers"""
         # with open('dataset/train_set.csv', newline='') as csvfile:
@@ -38,13 +41,13 @@ class Data:
         #             np.append(classes, class_)
 
 
-        train = np.genfromtxt ('dataset/train_set.csv', delimiter=",")
+        train = np.genfromtxt ('/Users/justindulay/research/infilling/bakeoff/dataset/train_set.csv', delimiter=",")
         classes = train[:,1]   
         # make unique
-        result = []
+        result = np.empty([1])
         for c in classes: 
             if c not in result: 
-                result = append(result, c)
+                np.append(result, c)
 
         #  classes = listdir(self.data_dir)
         # return sorted(classes, key=lambda item: (int(item.partition('.')[0])
@@ -54,7 +57,7 @@ class Data:
     def get_data(self):
         """Retrieve data information from the training set file"""
 
-        csv = np.genfromtxt('/lab/vislab/DATA/Hotels-50K/bakeoff/dataset/train_set.csv', delimiter=",")
+        csv = np.genfromtxt('dataset/train_set.csv', delimiter=",")
         classes = csv[:,1]   
         images = csv[:,2]
         labels = csv[:,3]
@@ -72,3 +75,14 @@ class Data:
         train_data = df.sample(frac=0.7)
         valid_data = df[~df['image'].isin(train_data['image'])]
         return train_data, valid_data
+
+class Subset():
+    def __init__(self, table, data_dir, transform):
+        self.table = table
+        self.data_dir = data_dir
+        self.transform = transform
+        self.set = TargetDataset(self.table, self.data_dir, transform = self.transform)
+
+    def shuffle(self):
+        self.table = self.table.sample(frac=1)
+        self.set = TargetDataset(self.table, self.data_dir, transform = self.transform)

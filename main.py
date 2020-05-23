@@ -13,7 +13,7 @@ import dataloader
 import accuracy
 
 parser = argparse.ArgumentParser(description='PyTorch Training')
-parser.add_argument('-model', default='resnet', required=False,
+parser.add_argument('-model', default='resnet50', required=False,
                     help='model architecture')
 parser.add_argument('-loss_fn', default='batchall', required=False,
                     help='loss function')
